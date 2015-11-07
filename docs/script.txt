@@ -164,9 +164,9 @@ There is no widget for **DT_Trigger** command yet in Domoweb GUI,
 	:align: center
 
 
-You can however create a sensor device widget for the return of a "Script Info" sensor on Domoweb.
+You can however create a sensor device widget for the return of a **Script Info** sensor on Domoweb.
 
-As the datatype is generic (DT_Number), no unit is displayed on this widget sensor !
+As the datatype is generic (**DT_Number**), no unit is displayed on this widget sensor !
 
 
 .. image:: Domoweb_Widget_Script-Sensor.png
@@ -176,8 +176,7 @@ As the datatype is generic (DT_Number), no unit is displayed on this widget sens
 
    <br />
 
-And this sensor widget can be update with a **crontab scenario**, which run the **Script Info Command** :
-
+And this sensor widget can be update with a **crontab scenario**, which run the **Script Info Command**. 
 Every minute, the value is update.
 
 .. raw:: html
