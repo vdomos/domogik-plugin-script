@@ -1,3 +1,4 @@
+.. _toc:
 
 ================
 Table Of Content
@@ -7,4 +8,5 @@ Table Of Content
 
     /script
     /dev
+    /tests
     /changelog
