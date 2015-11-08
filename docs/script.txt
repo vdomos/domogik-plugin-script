@@ -206,8 +206,8 @@ To Do
 Add other script type:
 ----------------------
 
-* HTTP script type
-* JSON script type
+* HTTP script
+* JSON script
 
 .. raw:: html
 
