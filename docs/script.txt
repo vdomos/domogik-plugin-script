@@ -65,6 +65,10 @@ This is a **command** device that will return a boolean value after executing th
 .. note::
 	DT_Tigger "command" return a xpl-stat DT_Tigger sensor.
 
+.. raw:: html
+
+   <br />
+
 
 Domogik device type : **Script Info**
 -------------------------------------
@@ -74,10 +78,15 @@ This is a **command** device that will return a number value after executing the
 .. note::
 	DT_Tigger "command" return a xpl-stat DT_Number sensor.
 
+	
+.. warning::	
+	The shell script of a **Script Info device** should only return a number with or without a ending '\\n' 
+	otherwise the xpl-stat message will return a 'failed' status.
 
 .. raw:: html
 
    <br />
+   
 .. image:: Domogik_Device_Plugin-Script_2.png
 	:width: 500 px
 	:align: center
