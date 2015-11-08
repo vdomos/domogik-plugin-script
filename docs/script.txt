@@ -200,6 +200,20 @@ Every minute, the value is update.
 
    <br />
 
+To Do
+=====
+
+Add other script type:
+----------------------
+
+* HTTP script type
+* JSON script type
+
+.. raw:: html
+
+   <br />
+
+
 
 
 
