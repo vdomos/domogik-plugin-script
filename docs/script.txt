@@ -123,7 +123,7 @@ You can however create a sensor device widget for the return of a **Script Info*
 
 As the datatype is generic (**DT_Number**), no unit is displayed on this widget sensor !
 
-.. image:: Domoweb_Widget_Script-Sensora.png
+.. image:: Domoweb_Widget_Script-Sensor_1a.png
 
 
 And this sensor widget can be update with a **crontab scenario**, which run the **Script Info Command**. 
