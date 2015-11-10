@@ -9,52 +9,31 @@ Purpose
 
 The Script plugin is used to run shell scripts with optionnal parameters with Domogik
 
-.. raw:: html
-
-   <br />
-
 
 Plugin Information Page
 -----------------------
 
-.. raw:: html
+.. image:: Domogik_Plugin-Script_1a.png
 
-   <br />
-
-.. image:: Domogik_Plugin-Script_1.png
-	:width: 600 px
-	:align: center
-
-.. raw:: html
-
-   <br />
-   <hr>
 
 Dependencies
 ============
 
 No dependencies needed
 
-.. raw:: html
-
-   <br />
-   <hr>
-
 Plugin configuration
 ====================
 
 No configuration needed for the plugin
-
-.. raw:: html
-
-   <br />
-   <hr>
-
    
 Create the domogik devices
 ==========================
 
 There is 2 device types:
+
+   
+.. image:: Domogik_Device_Plugin-Script_2a.png
+
 
 
 Domogik device type : **Script Action**
@@ -62,18 +41,23 @@ Domogik device type : **Script Action**
 
 This is a **command** device that will return a boolean value after executing the script.
 
+**Script Action**, It's use only to run any executable file to do a action.
+
 .. note::
 	DT_Tigger "command" return a xpl-stat DT_Tigger sensor.
 
-.. raw:: html
 
-   <br />
+Examples (for setting lights of the living room): ::
+
+	$ ~/bin/setLum.sh salon on
 
 
 Domogik device type : **Script Info**
 -------------------------------------
 
 This is a **command** device that will return a number value after executing the script.
+
+**Script Info**, It's use to retrieve a value from any executable file.
 
 .. note::
 	DT_Tigger "command" return a xpl-stat DT_Number sensor.
@@ -83,17 +67,12 @@ This is a **command** device that will return a number value after executing the
 	The shell script of a **Script Info device** should only return a number with or without a ending '\\n' 
 	otherwise the xpl-stat message will return a 'failed' status.
 
-.. raw:: html
+	
+Examples (to get the power consumption of the day): ::
 
-   <br />
-   
-.. image:: Domogik_Device_Plugin-Script_2.png
-	:width: 500 px
-	:align: center
+	$ ~/bin/getElec.sh -jour
+	0.270
 
-.. raw:: html
-
-   <br />
 
 
 Device parameters configuration
@@ -110,52 +89,25 @@ program               string                      Executable filename, including
 arg                   string                      Command line arguments or 'none'
 ===================== =========================== ======================================================================
 
-.. raw:: html
-
-   <br />
-
 
 Configuration example:
 ----------------------
-
-.. raw:: html
-
-   <br />
    
-.. image:: Domogik_Device_Plugin-Script_4.png
-	:width: 700 px
-	:align: center
+.. image:: Domogik_Device_Plugin-Script_4a.png
 
-.. raw:: html
-
-   <br />
 
 
 List of created script devices
 ------------------------------
 
-.. raw:: html
+.. image:: Domogik_Device_Plugin-Script_1a.png
 
-   <br />
-   
-.. image:: Domogik_Device_Plugin-Script_1.png
-	:width: 480 px
-	:align: center
 
-.. raw:: html
-
-   <br />
-   <hr>
 
 Start the plugin
 ================
 
 You can now start the plugin (start button) and use the created domogik devices.
-
-.. raw:: html
-
-   <br />
-   <hr>
 
 
 Set up your widgets on the user interface
@@ -164,54 +116,27 @@ Set up your widgets on the user interface
 There is no widget for **DT_Trigger** command yet in Domoweb GUI,
  but you can run script in admin interface with the **Trigger button** of the device.
 
-.. raw:: html
-
-   <br />
-
-.. image:: Domogik_Device_Plugin-Script_3.png
-	:width: 580 px
-	:align: center
+.. image:: Domogik_Device_Plugin-Script_3a.png
 
 
 You can however create a sensor device widget for the return of a **Script Info** sensor on Domoweb.
 
 As the datatype is generic (**DT_Number**), no unit is displayed on this widget sensor !
 
+.. image:: Domoweb_Widget_Script-Sensora.png
 
-.. image:: Domoweb_Widget_Script-Sensor.png
-	:align: center
-
-.. raw:: html
-
-   <br />
 
 And this sensor widget can be update with a **crontab scenario**, which run the **Script Info Command**. 
 Every minute, the value is update.
 
-.. raw:: html
 
-   <br />
+.. image:: Domogik_Scenario_Plugin-Script_2a.png
 
-.. image:: Domogik_Scenario_Plugin-Script_2.png
-	:width: 400 px
-	:align: center
 
-.. raw:: html
 
-   <br />
 
-To Do
-=====
 
-Add other script type:
-----------------------
 
-* HTTP script
-* JSON script
-
-.. raw:: html
-
-   <br />
 
 
 
