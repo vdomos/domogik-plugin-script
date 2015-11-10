@@ -47,7 +47,7 @@ This is a **command** device that will return a boolean value after executing th
 	DT_Tigger "command" return a xpl-stat DT_Tigger sensor.
 
 
-Examples (for setting lights of the living room): ::
+Example script that can be run (for setting lights of the living room): ::
 
 	$ ~/bin/setLum.sh salon on
 
@@ -68,7 +68,7 @@ This is a **command** device that will return a number value after executing the
 	otherwise the xpl-stat message will return a 'failed' status.
 
 	
-Examples (to get the power consumption of the day): ::
+Example script that can be run (to get the power consumption of the day): ::
 
 	$ ~/bin/getElec.sh -jour
 	0.270
