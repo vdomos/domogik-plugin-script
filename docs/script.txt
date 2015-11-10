@@ -41,7 +41,7 @@ Domogik device type : **Script Action**
 
 This is a **command** device that will return a boolean value after executing the script.
 
-**Script Action**, It's use only to run any executable file to do a action.
+**Script Action**, It's use to run any executable file to do a action.
 
 .. note::
 	DT_Tigger "command" return a xpl-stat DT_Tigger sensor.
@@ -57,7 +57,7 @@ Domogik device type : **Script Info**
 
 This is a **command** device that will return a number value after executing the script.
 
-**Script Info**, It's use to retrieve a value from any executable file.
+**Script Info**, It's use to run any executable file to retrieve a value.
 
 .. note::
 	DT_Tigger "command" return a xpl-stat DT_Number sensor.
