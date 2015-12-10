@@ -89,17 +89,17 @@ class XplScriptManager(XplPlugin):
 		if message.data['status'] != "start":
 			self.log.warning("### This command with status '%s' is not for Domogik Script plugin" % message.data['status'] )
 			return
-		program = message.data['program']
-		arg = message.data["arg"]
+		program = message.data['program'].strip()
+		arg = message.data["arg"].strip()
 	
 		# Execute program
 		self.log.info("### Run program '%s' type '%s' with parameters '%s'" % (program, commandtype, arg))
 		
 		# call program
 		if arg =="none":
-			cmd_list= [program.strip()]
+			cmd_list= program.split(" ")
 		else:
-			cmd_list= [program.strip()] + arg.strip().split(" ")		# cmd_list = ['setchacon', 'sapin', 'on']
+			cmd_list = (program + " " + arg).split(" ")					# Ex.: cmd_list = ['setchacon', 'sapin', 'on']
 		resultcmd = self.script.run_cmd(cmd_list, commandtype)			# resultcmd = "executed|value|failed"
  
 
