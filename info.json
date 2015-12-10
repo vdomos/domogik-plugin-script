@@ -34,7 +34,7 @@
                 {
                     "key": "arg",
                     "xpl": true,
-                    "description": "Command line arguments or empty if not use",
+                    "description": "Command line arguments or 'none'",
                     "type": "string",
                     "default" : "none"
                 }
@@ -56,7 +56,7 @@
                 {
                     "key": "arg",
                     "xpl": true,
-                    "description": "Command line arguments or empty if not use",
+                    "description": "Command line arguments or 'none'",
                     "type": "string",
                     "default" : "none"
                 }
