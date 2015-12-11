@@ -91,7 +91,7 @@ arg                   string                      Command line arguments or 'non
 
 
 .. warning::	
-	Specials caracters like '>','<', '|' are not authorized in 'program' or 'arg' fields.
+	Specials characters like '>','<', '|' are not authorized in 'program' or 'arg' fields.
 
 
 Configuration example:
