@@ -55,16 +55,53 @@ class XplScriptManager(XplPlugin):
 		if not self.check_configured():
 			return
 			
-		### get all config keys
-		# no configuration needed
+		### get the devices list
+		# for this plugin, if no devices are created we won't be able to use devices.
+		self.devices = self.get_device_list(quit_if_no_device = True)
+		#print(self.devices)		# List devices créés dans plugin ?
+
 				
 		# Init script functions
 		self.script  = Script(self.log)
 		
+		### For each device
+		for a_device in self.devices:
+			#self.log.info(u"a_device:   %s" % format(a_device))
+			
+			device_name = a_device["name"]											# Ex.: "Conso Elec Jour"
+			device_typeid = a_device["device_type_id"]								# Ex.: "script.info_number | script.info_binary | script.action"
+			device_cb = device_typeid.replace('.', '_').encode('ascii', 'ignore')	# Ex.: "script_info_number | script_info_binary | script_action"
+			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "get_" + device_cb, "program")				# Ex.: "/home/user/getElec.sh -jour"
+			if device_typeid != "script.action":
+				command_interval = self.get_parameter_for_feature(a_device, "xpl_stats", "get_" + device_cb, "interval")		# Ex.: "0|60"
+				self.log.info(u"==> Device '{0}' ({1}), script info to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
+				threads = {}
+				if command_interval != 0:
+					thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
+					self.log.info(u"==> Launch thread '%s' for '%s' device !" % (thr_name, device_name))
+					'''
+					threads[thr_name] = threading.Thread(None, 
+											eval(self.script + '.' + device_cb),	# "script_info_number | script_info_binary"
+											thr_name,
+											(self.log,
+												device_name,
+												command_script, 
+												command_interval,
+												self.send_xpl,
+												self.get_stop()
+											),
+										{})
+					threads[thr_name].start()
+					self.register_thread(threads[thr_name])
+					'''
+			else:
+				self.log.info(u"==> Device '{0}' ({1}), script action to call = '{2}'".format(device_name, device_typeid, command_script))
+		
+		'''
 		# Create listeners
 		self.log.info("### Creating listener for Script")    
 		Listener(self.script_cmnd_cb, self.myxpl, {'xpltype': 'xpl-cmnd', 'schema': 'exec.basic'})	# exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='start' }
-
+		'''
 		
 		self.ready()
 
@@ -105,14 +142,21 @@ class XplScriptManager(XplPlugin):
 
 		# Send ACK xpl-trig message to xpl-cmnd command.
 		self.log.debug("### Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
-		mess = XplMessage()
-		mess.set_type('xpl-trig')
-		mess.set_schema('exec.basic')
-		mess.add_data({'pid'     :  commandtype})
-		mess.add_data({'program' :  program})
-		mess.add_data({'arg'     :  arg})
-		mess.add_data({'status'  :  resultcmd})
-		self.myxpl.send(mess)
+		self.send_xpl("xpl-trig", {"program" : program, "type" : commandtype, "status" : resultcmd})
+
+
+	def send_xpl(self, type, data):
+		""" Send data on xPL network
+			@param data : data to send (dict)
+		"""
+		msg = XplMessage()
+		msg.set_type(type)
+		msg.set_schema("exec.basic")
+		for element in data:
+			msg.add_data({element : data[element]})
+		self.log.debug("==> Send xpl message...")
+		self.log.debug(msg)
+		self.myxpl.send(msg)
 
 
 if __name__ == "__main__":
