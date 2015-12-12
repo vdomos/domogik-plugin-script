@@ -41,6 +41,8 @@ from domogik.xpl.common.plugin import XplPlugin
 from domogik_packages.plugin_script.lib.script import Script
 from domogik_packages.plugin_script.lib.script import ScriptException
 
+import threading
+
 
 class XplScriptManager(XplPlugin):
 	""" 
@@ -70,31 +72,30 @@ class XplScriptManager(XplPlugin):
 			
 			device_name = a_device["name"]										# Ex.: "Conso Elec Jour"
 			device_typeid = a_device["device_type_id"]							# Ex.: "script.info_number | script.info_binary | script.action"
-			device_statname = device_typeid.replace('.', '_')							# Ex.: "script_info_number | script_info_binary | script_action"
-			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_statname, "program").strip()	# Ex.: "/home/user/getElec.sh -jour"
-			if device_typeid != "script.action":
-				command_interval = self.get_parameter(a_device, "interval")		# Ex.: "0|60"
+			device_statname = device_typeid.replace('.', '_')					# Ex.: "script_info_number | script_info_binary | script_action"
+			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_statname, "program")	# Ex.: "/home/user/getElec.sh -jour"
+			if device_typeid != "script.action":								# Shedule only script_info_* scripts
+				command_interval = self.get_parameter(a_device, "interval")		# Ex.: "60" in secondes
 				self.log.info(u"==> Device '{0}' ({1}) to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
+				if command_interval <= 0:
+					command_interval = 0
+				thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
+				self.log.info(u"==> Launch thread '%s' for '%s' device !" % (thr_name, device_name))
 				threads = {}
-				if command_interval != 0:
-					thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
-					self.log.info(u"==> Launch thread '%s' for '%s' device !" % (thr_name, device_name))
-					'''
-					threads[thr_name] = threading.Thread(None, 
-											self.script.runScheduledCmd
-											thr_name,
-											(self.log,
-												device_name,
-												device_typeid,
-												command_script.split(" "), 
-												command_interval,
-												self.send_xpl,
-												self.get_stop()
-											),
-										{})
-					threads[thr_name].start()
-					self.register_thread(threads[thr_name])
-					'''
+				threads[thr_name] = threading.Thread(None, 
+										self.script.runScheduledCmd,
+										thr_name,
+										(self.log,
+											device_name,
+											device_statname,
+											command_script, 
+											command_interval,
+											self.send_xpl,
+											self.get_stop()
+										),
+									{})
+				threads[thr_name].start()
+				self.register_thread(threads[thr_name])
 			else:
 				self.log.info(u"==> Device '{0}' ({1}) to call = '{2}'".format(device_name, device_typeid, command_script))
 		
@@ -109,12 +110,11 @@ class XplScriptManager(XplPlugin):
 
 	def scriptCmnd_cb(self, message):
 		""" Call script lib for run program
-			@param message : xpl message
-			
-			type: 		Command type, must be set to "script.info_number | script.info_binary | script.action"
-			program: 	Executable filename, including path and extension
-			status: 	'start' for running program
-			
+			@param 
+			message :	xpl message
+			type : 		Command type, must be set to "script.info_number | script.info_binary | script.action"
+			program : 	Executable filename, including path and extension
+			status : 	'start' for running program
 		"""
 		self.log.debug("==> Call scriptCmnd_cb")
 
@@ -131,8 +131,7 @@ class XplScriptManager(XplPlugin):
 		self.log.info("==> Execute requested script '%s' type '%s'" % (program, scripttype))
 		
 		# call program
-		script = program.split(" ")								# Ex.: script = ['setchacon', 'sapin', 'on']
-		resultcmd = self.script.runCmd(script, scripttype)		# resultcmd = "executed|value|failed"
+		resultcmd = self.script.runCmd(program, scripttype)		# resultcmd = "executed|value|failed"
  
 		# Send ACK xpl-trig message to xpl-cmnd command.
 		self.log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)

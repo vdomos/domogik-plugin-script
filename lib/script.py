@@ -26,6 +26,7 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 @organization: Domogik
 """
 
+import time
 import traceback
 import subprocess
 
@@ -56,10 +57,13 @@ class Script:
 		
 	def runCmd(self, script, type):
 		""" Execute shell command.
+			script : 	script (list)
+			type :		Scritp type
 		"""
-		self.log.info("==> Execute subprocess '%s'" % script)
+		cmd = script.strip().split(" ")
+		self.log.info("==> Execute subprocess for '%s'" % cmd)
 		try:
-			outputcmd = subprocess.check_output(script, stderr=subprocess.STDOUT, shell=False).strip()
+			outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
 		except subprocess.CalledProcessError, e:
 			self.log.error("### Command '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
 			return "failed"
@@ -82,6 +86,8 @@ class Script:
 
 			
 	def is_number(self, s):
+		''' Return 'True' if s is a number
+		'''
 		try:
 			float(s)
 			return True
@@ -90,9 +96,16 @@ class Script:
 
 
 	def runScheduledCmd(self, log, devname, scripttype, script, interval, sendxpl, stop):
+		""" Execute shell command evry interval secondes.
+			@param 
+			devname :		Device name
+			scripttype :	Scritp type
+			script : 		script (list)
+			interval : 		Interval in seconde to execute script
+		"""
 		while not stop.isSet():
 			log.info("==> Execute scheduled script '%s' for device '%s' (type %s)" % (devname, script, scripttype))
-			resultcmd = self.run_cmd(script, scripttype)	
+			resultcmd = self.runCmd(script, scripttype)	
 			log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
 			sendxpl("xpl-trig", {"program" : script, "type" : scripttype, "status" : resultcmd})
 			time.sleep(interval)

@@ -37,15 +37,15 @@
 			"id": "script.info_number",
 			"description": "Script to read a Number Sensor", 
 			"name": "Script Info Number",
-			"commands": ["cmd_script_info_number"],
+			"commands": [],
 			"sensors": ["sensor_script_info_number"],
 			"parameters": [
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval (s) between 2 executions, 0 = disable automatique execution (plugin must be restart if !=0).",
+					"description": "Interval in secondes between executions (plugin must be restart).",
 					"type": "integer",
-					"default": "0"
+					"default": "60"
 				},
 				{
 					"key": "program",
@@ -59,15 +59,15 @@
 			"id": "script.sensor_binary",
 			"description": "Script to read a Binary Sensor", 
 			"name": "Script Info Binary",
-			"commands": ["cmd_script_info_binary"],
+			"commands": [],
 			"sensors": ["sensor_script_info_binary"],
 			"parameters": [
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval (s) between 2 executions, 0 = disable automatique execution (plugin must be restart if !=0).",
+					"description": "Interval in secondes between executions (plugin must be restart).",
 					"type": "integer",
-					"default": "0"
+					"default": "60"
 				},
 				{
 					"key": "program",
@@ -81,7 +81,7 @@
 
 	"commands": { 
 		"cmd_script_action" : {
-			"name" : "Cmd script action",
+			"name" : "Script action",
 			"return_confirmation" : true,
 			"parameters" : [
 				{
@@ -91,30 +91,6 @@
 				}
 			],
 			"xpl_command" : "run_script_action"
-		},
-		"cmd_script_info_number" : {
-			"name" : "Cmd script info number",
-			"return_confirmation" : true,
-			"parameters" : [
-				{
-					"key" : "status",
-					"data_type" : "DT_Trigger",
-					"conversion" : "from_DT_Trigger_to_start"
-				}
-			],
-			"xpl_command" : "run_script_info_number"
-		},
-		"cmd_script_info_binary" : {
-			"name" : "Cmd script info binary",
-			"return_confirmation" : true,
-			"parameters" : [
-				{
-					"key" : "status",
-					"data_type" : "DT_Trigger",
-					"conversion" : "from_DT_Trigger_to_start"
-				}
-			],
-			"xpl_command" : "run_script_info_binary"
 		}
 	},
 
@@ -128,34 +104,6 @@
 						{
 							"key": "type",
 							"value": "script_action"
-						}
-					],
-				"device": []
-			}
-		},
-		"run_script_info_number" : {
-			"name": "Run script info number",
-			"schema": "exec.basic",
-			"xplstat_name": "stat_script_info_number",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_info_number"
-						}
-					],
-				"device": []
-			}
-		},
-		"run_script_info_binary" : {
-			"name": "Run script info binary",
-			"schema": "exec.basic",
-			"xplstat_name": "stat_script_info_binary",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_info_binary"
 						}
 					],
 				"device": []
@@ -242,21 +190,21 @@
 			}
 		},
 		"sensor_script_info_number": {
-			"name": "Script InfoNum",
+			"name": "Script Info Num",
 			"incremental" : false,
 			"data_type": "DT_Number",
 			"conversion": "",
 			"timeout" : 0,
 			"history": {
 				"store": true,
-				"duplicate" : true,
+				"duplicate" : false,
 				"max": 0,
 				"expire": 0,
 				"round_value": 0
 			}
 		},
 		"sensor_script_info_binary": {
-			"name": "Script InfoBin",
+			"name": "Script Info Bin",
 			"incremental" : false,
 			"data_type": "DT_Bool",
 			"conversion": "",

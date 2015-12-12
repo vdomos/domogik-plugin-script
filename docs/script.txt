@@ -13,7 +13,7 @@ The Script plugin is used to run shell scripts with optionnal parameters with Do
 Plugin Information Page
 -----------------------
 
-.. image:: Domogik_Plugin-Script_1a.png
+.. image:: Domogik_Device_Plugin-Script_16.png
 
 
 Dependencies
@@ -29,10 +29,10 @@ No configuration needed for the plugin
 Create the domogik devices
 ==========================
 
-There is 2 device types:
+There is 3 device types:
 
    
-.. image:: Domogik_Device_Plugin-Script_2a.png
+.. image:: Domogik_Device_Plugin-Script_11.png
 
 
 
@@ -52,19 +52,45 @@ Example script that can be run (for setting lights of the living room): ::
 	$ ~/bin/setLum.sh salon on
 
 
-Domogik device type : **Script Info**
--------------------------------------
+	
+Domogik device type : **Script Info Binary**
+--------------------------------------------
 
-This is a **command** device that will return a number value after executing the script.
+This is a **sensors** device that will return a boolean value after executing the script.
 
-**Script Info**, It's use to run any executable file to retrieve a value.
+**Script Info**, It's use to run any executable file to retrieve a **boolean** value. The script will be execute every n secondes configured in the admin interface.
+
 
 .. note::
-	DT_Tigger "command" return a xpl-stat DT_Number sensor.
+	The "Script Info Binary" return a xpl-stat DT_Bool sensor.
 
 	
 .. warning::	
-	The shell script of a **Script Info device** should only return a number with or without a ending '\\n' 
+	The shell script of a **Script Info Binary device** should only return '0'|'1' with or without a ending '\\n' 
+	otherwise the xpl-stat message will return a 'failed' status.
+
+	
+Example script that can be run (to get the status of a process): ::
+
+	$ ~/bin/check_process.sh lcdmeteo.py
+	1
+
+
+
+Domogik device type : **Script Info Number**
+--------------------------------------------
+
+This is a **sensor** device that will return a number value after executing the script.
+
+**Script Info**, It's use to run any executable file to retrieve a **number** value. The script will be execute every n secondes configured in the admin interface.
+
+
+.. note::
+	The "Script Info Number" return a xpl-stat DT_Number sensor.
+
+	
+.. warning::	
+	The shell script of a **Script Info Number device** should only return a 'number' with or without a ending '\\n' 
 	otherwise the xpl-stat message will return a 'failed' status.
 
 	
@@ -78,33 +104,46 @@ Example script that can be run (to get the power consumption of the day): ::
 Device parameters configuration
 -------------------------------
 
-Two parameters are needed for a domogik device creation, same configuration for **Script Action** or **Script Info** device:
-
+One parameters are needed for a domogik **Script Action** device creation:
 
 ===================== =========================== ======================================================================
 Key                   Type                        Description
 ===================== =========================== ======================================================================
-program               string                      Executable filename, including path and extension
+program               string                      Executable filename, including path, extension and arguments
+===================== =========================== ======================================================================
+
+
+
+Two parameters are needed for a domogik **Script Info Number** or **Script Info Binary** device creation:
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+interval              integer                     Interval in secondes between executions (plugin must be restart)
 --------------------- --------------------------- ----------------------------------------------------------------------
-arg                   string                      Command line arguments or 'none'
+program               string                      Executable filename, including path, extension and arguments
 ===================== =========================== ======================================================================
 
 
 .. warning::	
-	Specials characters like '>','<', '|' are not authorized in 'program' or 'arg' fields.
+	Specials characters like '>','<', '|' are not authorized in 'program' fields.
 
 
 Configuration example:
 ----------------------
    
-.. image:: Domogik_Device_Plugin-Script_4a.png
+.. image:: Domogik_Device_Plugin-Script_13.png
+
+.. image:: Domogik_Device_Plugin-Script_14.png
+
+.. image:: Domogik_Device_Plugin-Script_15.png
 
 
 
 List of created script devices
 ------------------------------
 
-.. image:: Domogik_Device_Plugin-Script_1a.png
+.. image:: Domogik_Device_Plugin-Script_12.png
 
 
 
@@ -117,33 +156,10 @@ You can now start the plugin (start button) and use the created domogik devices.
 Set up your widgets on the user interface
 =========================================
 
-There is no widget for **DT_Trigger** command yet in Domoweb GUI,
- but you can run script in admin interface with the **Trigger button** of the device.
+You can now place the widgets of your devices features on the user interface.
 
-.. image:: Domogik_Device_Plugin-Script_3a.png
+Example in Domoweb interface:
 
-
-You can however create a sensor device widget for the return of a **Script Info** sensor on Domoweb.
-
-As the datatype is generic (**DT_Number**), no unit is displayed on this widget sensor !
-
-.. image:: Domoweb_Widget_Script-Sensor_1a.png
-
-
-And this sensor widget can be update with a **crontab scenario**, which run the **Script Info Command**. 
-Every minute, the value is update.
-
-
-.. image:: Domogik_Scenario_Plugin-Script_2a.png
-
-
-
-
-
-
-
-
-
-
+.. image:: Domogik_Device_Plugin-Script_10.png
 
 
