@@ -39,15 +39,15 @@ There is 3 device types:
 Domogik device type : **Script Action**
 ---------------------------------------
 
-This is a **command** device that will return a boolean value after executing the script.
+This is a **command** device that will execute a script.
 
-**Script Action**, It's use to run any executable file to do a action.
+**Script Action**, It is use to run any executable file to do a action.
 
 .. note::
-	DT_Tigger "command" return a xpl-stat DT_Tigger sensor.
+	The "**Script Action**" return a xpl-stat **DT_Tigger** sensor.
 
 
-Example script that can be run (for setting lights of the living room): ::
+Example script that can be run (for setting lights of the living room for example): ::
 
 	$ ~/bin/setLum.sh salon on
 
@@ -56,13 +56,13 @@ Example script that can be run (for setting lights of the living room): ::
 Domogik device type : **Script Info Binary**
 --------------------------------------------
 
-This is a **sensors** device that will return a boolean value after executing the script.
+This is a **sensors** device that will return a **boolean** value after executing the script.
 
 **Script Info Binary**, It's use to run any executable file to retrieve a **boolean** value. The script will be execute every n secondes configured in the admin interface.
 
 
 .. note::
-	The "Script Info Binary" return a xpl-stat DT_Bool sensor.
+	The "**Script Info Binary**" return a xpl-stat **DT_Bool** sensor.
 
 	
 .. warning::	
@@ -70,7 +70,7 @@ This is a **sensors** device that will return a boolean value after executing th
 	otherwise the xpl-stat message will return a **failed** status.
 
 	
-Example script that can be run (to get the status of a process): ::
+Example script that can be run (to get the status of a process for example): ::
 
 	$ ~/bin/check_process.sh lcdmeteo.py
 	1
@@ -80,13 +80,13 @@ Example script that can be run (to get the status of a process): ::
 Domogik device type : **Script Info Number**
 --------------------------------------------
 
-This is a **sensor** device that will return a number value after executing the script.
+This is a **sensor** device that will return a **number** value after executing the script.
 
 **Script Info Number**, It's use to run any executable file to retrieve a **number** value. The script will be execute every n secondes configured in the admin interface.
 
 
 .. note::
-	The "Script Info Number" return a xpl-stat DT_Number sensor.
+	The "**Script Info Number**" return a xpl-stat **DT_Number** sensor.
 
 	
 .. warning::	
@@ -94,7 +94,7 @@ This is a **sensor** device that will return a number value after executing the 
 	otherwise the xpl-stat message will return a **failed** status.
 
 	
-Example script that can be run (to get the power consumption of the day): ::
+Example script that can be run (to get the power consumption of the day for example): ::
 
 	$ ~/bin/getElec.sh -jour
 	0.270
@@ -140,8 +140,8 @@ Configuration example:
 
 
 
-List of created script devices
-------------------------------
+List of example created scripts devices
+---------------------------------------
 
 .. image:: Domogik_Device_Plugin-Script_12.png
 

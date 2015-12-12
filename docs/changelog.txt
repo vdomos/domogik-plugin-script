@@ -2,6 +2,14 @@
 Changelog
 =========
 
+0.2
+===
+
+* Adding **Script Info Binary**
+* Sensor scripts (**Script Info Binary** and **Script Info Number**) will be execute every n secondes configured in the admin interface. 
+Not more need a scenario to do that.
+
+
 0.1
 ===
 
