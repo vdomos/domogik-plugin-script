@@ -58,7 +58,7 @@ Domogik device type : **Script Info Binary**
 
 This is a **sensors** device that will return a boolean value after executing the script.
 
-**Script Info**, It's use to run any executable file to retrieve a **boolean** value. The script will be execute every n secondes configured in the admin interface.
+**Script Info Binary**, It's use to run any executable file to retrieve a **boolean** value. The script will be execute every n secondes configured in the admin interface.
 
 
 .. note::
@@ -66,7 +66,7 @@ This is a **sensors** device that will return a boolean value after executing th
 
 	
 .. warning::	
-	The shell script of a **Script Info Binary device** should only return '0'|'1' with or without a ending '\\n' 
+	The shell script of a **Script Info Binary device** should only return **'0'|'1'** with or without a ending '\\n' 
 	otherwise the xpl-stat message will return a 'failed' status.
 
 	
@@ -82,7 +82,7 @@ Domogik device type : **Script Info Number**
 
 This is a **sensor** device that will return a number value after executing the script.
 
-**Script Info**, It's use to run any executable file to retrieve a **number** value. The script will be execute every n secondes configured in the admin interface.
+**Script Info Number**, It's use to run any executable file to retrieve a **number** value. The script will be execute every n secondes configured in the admin interface.
 
 
 .. note::
@@ -90,7 +90,7 @@ This is a **sensor** device that will return a number value after executing the 
 
 	
 .. warning::	
-	The shell script of a **Script Info Number device** should only return a 'number' with or without a ending '\\n' 
+	The shell script of a **Script Info Number device** should only return a **number** with or without a ending '\\n' 
 	otherwise the xpl-stat message will return a 'failed' status.
 
 	
@@ -126,7 +126,7 @@ program               string                      Executable filename, including
 
 
 .. warning::	
-	Specials characters like '>','<', '|' are not authorized in 'program' fields.
+	Specials characters like '>','<', '|' are not authorized in **program** fields.
 
 
 Configuration example:
