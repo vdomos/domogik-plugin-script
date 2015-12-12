@@ -68,24 +68,25 @@ class XplScriptManager(XplPlugin):
 		for a_device in self.devices:
 			#self.log.info(u"a_device:   %s" % format(a_device))
 			
-			device_name = a_device["name"]											# Ex.: "Conso Elec Jour"
-			device_typeid = a_device["device_type_id"]								# Ex.: "script.info_number | script.info_binary | script.action"
-			device_cb = device_typeid.replace('.', '_').encode('ascii', 'ignore')	# Ex.: "script_info_number | script_info_binary | script_action"
-			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_cb, "program")				# Ex.: "/home/user/getElec.sh -jour"
+			device_name = a_device["name"]										# Ex.: "Conso Elec Jour"
+			device_typeid = a_device["device_type_id"]							# Ex.: "script.info_number | script.info_binary | script.action"
+			device_statname = device_typeid.replace('.', '_')							# Ex.: "script_info_number | script_info_binary | script_action"
+			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_statname, "program").strip()	# Ex.: "/home/user/getElec.sh -jour"
 			if device_typeid != "script.action":
-				command_interval = self.get_parameter(a_device, "interval")			# Ex.: "0|60"
-				self.log.info(u"==> Device '{0}' '{1}' to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
+				command_interval = self.get_parameter(a_device, "interval")		# Ex.: "0|60"
+				self.log.info(u"==> Device '{0}' ({1}) to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
 				threads = {}
 				if command_interval != 0:
 					thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
 					self.log.info(u"==> Launch thread '%s' for '%s' device !" % (thr_name, device_name))
 					'''
 					threads[thr_name] = threading.Thread(None, 
-											eval(self.script + '.' + device_cb),	# "script_info_number | script_info_binary"
+											self.script.runScheduledCmd
 											thr_name,
 											(self.log,
 												device_name,
-												command_script, 
+												device_typeid,
+												command_script.split(" "), 
 												command_interval,
 												self.send_xpl,
 												self.get_stop()
@@ -95,54 +96,47 @@ class XplScriptManager(XplPlugin):
 					self.register_thread(threads[thr_name])
 					'''
 			else:
-				self.log.info(u"==> Device '{0}' '{1}' to call = '{2}'".format(device_name, device_typeid, command_script))
+				self.log.info(u"==> Device '{0}' ({1}) to call = '{2}'".format(device_name, device_typeid, command_script))
 		
-		'''
+		
 		# Create listeners
-		self.log.info("### Creating listener for Script")    
-		Listener(self.script_cmnd_cb, self.myxpl, {'xpltype': 'xpl-cmnd', 'schema': 'exec.basic'})	# exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='start' }
-		'''
-		
+		self.log.info("==> Creating listener for Script")    
+		Listener(self.scriptCmnd_cb, self.myxpl, {'xpltype': 'xpl-cmnd', 'schema': 'exec.basic'})
+				
 		self.ready()
 
 
 
-	def script_cmnd_cb(self, message):
+	def scriptCmnd_cb(self, message):
 		""" Call script lib for run program
 			@param message : xpl message
 			
-			pid: 		Command type, must be set to "cmd_action|cmd_info"
+			type: 		Command type, must be set to "script.info_number | script.info_binary | script.action"
 			program: 	Executable filename, including path and extension
-			arg:		Command line arguments or 'none'
 			status: 	'start' for running program
 			
 		"""
-		self.log.debug("### Call script_cmnd_cb")
+		self.log.debug("==> Call scriptCmnd_cb")
 
-		commandtype = message.data['pid']
-		if (commandtype != "cmd_action") and (commandtype != "cmd_info"):
-			self.log.warning("### This command type %s' is not for Domogik Script plugin" % message.data['pid'] )
+		scripttype = message.data['type']
+		if (scripttype != "script_info_number") and (scripttype != "script_info_binary") and (scripttype != "script_action"):
+			self.log.error("### This command type %s' is not for Domogik Script plugin" % message.data['type'] )
 			return
 		if message.data['status'] != "start":
-			self.log.warning("### This command with status '%s' is not for Domogik Script plugin" % message.data['status'] )
+			self.log.error("### This command with status '%s' is not for Domogik Script plugin" % message.data['status'] )
 			return
 		program = message.data['program'].strip()
-		arg = message.data["arg"].strip()
 	
 		# Execute program
-		self.log.info("### Run program '%s' type '%s' with parameters '%s'" % (program, commandtype, arg))
+		self.log.info("==> Execute requested script '%s' type '%s'" % (program, scripttype))
 		
 		# call program
-		if arg =="none":
-			cmd_list= program.split(" ")
-		else:
-			cmd_list = (program + " " + arg).split(" ")					# Ex.: cmd_list = ['setchacon', 'sapin', 'on']
-		resultcmd = self.script.run_cmd(cmd_list, commandtype)			# resultcmd = "executed|value|failed"
+		script = program.split(" ")								# Ex.: script = ['setchacon', 'sapin', 'on']
+		resultcmd = self.script.runCmd(script, scripttype)		# resultcmd = "executed|value|failed"
  
-
 		# Send ACK xpl-trig message to xpl-cmnd command.
-		self.log.debug("### Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
-		self.send_xpl("xpl-trig", {"program" : program, "type" : commandtype, "status" : resultcmd})
+		self.log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)
+		self.send_xpl("xpl-trig", {"program" : program, "type" : scripttype, "status" : resultcmd})
 
 
 	def send_xpl(self, type, data):

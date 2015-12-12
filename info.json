@@ -43,7 +43,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in seconds between 2 executions of the script (0 = disable automatique execution).",
+					"description": "Interval (s) between 2 executions, 0 = disable automatique execution (plugin must be restart if !=0).",
 					"type": "integer",
 					"default": "0"
 				},
@@ -65,7 +65,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in seconds between 2 executions of the script (0 = disable automatique execution).",
+					"description": "Interval (s) between 2 executions, 0 = disable automatique execution (plugin must be restart if !=0).",
 					"type": "integer",
 					"default": "0"
 				},
@@ -127,7 +127,7 @@
 				"static": [
 						{
 							"key": "type",
-							"value": "cmd_action"
+							"value": "script_action"
 						}
 					],
 				"device": []
@@ -141,7 +141,7 @@
 				"static": [
 						{
 							"key": "type",
-							"value": "cmd_info_number"
+							"value": "script_info_number"
 						}
 					],
 				"device": []
@@ -155,7 +155,7 @@
 				"static": [
 						{
 							"key": "type",
-							"value": "cmd_info_binary"
+							"value": "script_info_binary"
 						}
 					],
 				"device": []
@@ -171,7 +171,7 @@
 				"static": [
 						{
 							"key": "type",
-							"value": "cmd_action"
+							"value": "script_action"
 						}
 					],
 				"device": [],
@@ -191,7 +191,7 @@
 				"static": [
 						{
 							"key": "type",
-							"value": "cmd_info_number"
+							"value": "script_info_number"
 						}
 					],
 				"device": [],
@@ -211,7 +211,7 @@
 				"static": [
 						{
 							"key": "type",
-							"value": "cmd_info_binary"
+							"value": "script_info_binary"
 						}
 					],
 				"device": [],

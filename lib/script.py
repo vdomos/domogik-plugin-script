@@ -54,26 +54,31 @@ class Script:
 		self.log = log
 		
 		
-	def run_cmd(self, cmd, type):
+	def runCmd(self, script, type):
 		""" Execute shell command.
 		"""
-		self.log.info("### Execute subprocess '%s'" % cmd)
+		self.log.info("==> Execute subprocess '%s'" % script)
 		try:
-			outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False)
+			outputcmd = subprocess.check_output(script, stderr=subprocess.STDOUT, shell=False).strip()
 		except subprocess.CalledProcessError, e:
-			self.log.error("### Command '%s' failed with error : %d, (%s)" % (cmd, e.returncode, e.output))
+			self.log.error("### Command '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
 			return "failed"
 		except OSError, e: 
-			self.log.error("### Command '%s' failed with OSerror : %d, (%s)" % (cmd, e.errno, e.strerror))
+			self.log.error("### Command '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
 			return "failed"
 
-		if  (type == "cmd_action"): 
+		if  (type == "script_action"): 
 			return "executed"
-		else:
+		elif  (type == "script_info_number"): 
 			if not self.is_number(outputcmd):
-				self.log.error("### Sensor DT_Number Command '%s' not return a number: '%s'" % (cmd, outputcmd))
+				self.log.error("### Script type Number '%s' not return a number: '%s'" % (script, outputcmd))
 				return "failed"
-			return outputcmd.rstrip()
+		else:
+			if outputcmd not in ['0', '1']:	
+				self.log.error("### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd))
+				return "failed"
+
+		return outputcmd
 
 			
 	def is_number(self, s):
@@ -84,15 +89,15 @@ class Script:
 			return False
 
 
-	def script_info_number(self, log, devname, script, interval, sendxpl, stop):
+	def runScheduledCmd(self, log, devname, scripttype, script, interval, sendxpl, stop):
 		while not stop.isSet():
+			log.info("==> Execute scheduled script '%s' for device '%s' (type %s)" % (devname, script, scripttype))
+			resultcmd = self.run_cmd(script, scripttype)	
+			log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
+			sendxpl("xpl-trig", {"program" : script, "type" : scripttype, "status" : resultcmd})
 			time.sleep(interval)
 	
-	def script_info_binary(self, log, devname, script, interval, sendxpl, stop):	
-
-		while not stop.isSet():
-			time.sleep(interval)
-
+	
 
 
 
