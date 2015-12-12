@@ -71,10 +71,10 @@ class XplScriptManager(XplPlugin):
 			device_name = a_device["name"]											# Ex.: "Conso Elec Jour"
 			device_typeid = a_device["device_type_id"]								# Ex.: "script.info_number | script.info_binary | script.action"
 			device_cb = device_typeid.replace('.', '_').encode('ascii', 'ignore')	# Ex.: "script_info_number | script_info_binary | script_action"
-			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "get_" + device_cb, "program")				# Ex.: "/home/user/getElec.sh -jour"
+			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_cb, "program")				# Ex.: "/home/user/getElec.sh -jour"
 			if device_typeid != "script.action":
-				command_interval = self.get_parameter_for_feature(a_device, "xpl_stats", "get_" + device_cb, "interval")		# Ex.: "0|60"
-				self.log.info(u"==> Device '{0}' ({1}), script info to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
+				command_interval = self.get_parameter(a_device, "interval")			# Ex.: "0|60"
+				self.log.info(u"==> Device '{0}' '{1}' to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
 				threads = {}
 				if command_interval != 0:
 					thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
@@ -95,7 +95,7 @@ class XplScriptManager(XplPlugin):
 					self.register_thread(threads[thr_name])
 					'''
 			else:
-				self.log.info(u"==> Device '{0}' ({1}), script action to call = '{2}'".format(device_name, device_typeid, command_script))
+				self.log.info(u"==> Device '{0}' '{1}' to call = '{2}'".format(device_name, device_typeid, command_script))
 		
 		'''
 		# Create listeners

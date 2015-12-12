@@ -85,12 +85,12 @@ class Script:
 
 
 	def script_info_number(self, log, devname, script, interval, sendxpl, stop):
-        while not stop.isSet():
+		while not stop.isSet():
 			time.sleep(interval)
 	
 	def script_info_binary(self, log, devname, script, interval, sendxpl, stop):	
 
-        while not stop.isSet():
+		while not stop.isSet():
 			time.sleep(interval)
 
 

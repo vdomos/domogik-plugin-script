@@ -5,6 +5,12 @@ Development informations
 xPL messages
 ============
 
+
+
+"exec.basic { type='cmd_action|cmd_info_number|cmd_info_binary'  program='/path/program [parameters]'  status='start' }"
+
+
+
 xpl-cmnd
 --------
 

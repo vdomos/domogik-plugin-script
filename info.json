@@ -10,8 +10,7 @@
 		"domogik_min_version": "0.4.0", 
 		"name": "script", 
 		"type": "plugin", 
-		"version": "0.2",
-		"Comment": "exec.basic { type='cmd_action|cmd_info_number|cmd_info_binary'  program='/path/program [parameters]'  status='start' }"
+		"version": "0.2"
 	}, 
 
 	"products" : [],
@@ -151,7 +150,7 @@
 		"run_script_info_binary" : {
 			"name": "Run script info binary",
 			"schema": "exec.basic",
-			"xplstat_name": "stat_script_info_bynary",
+			"xplstat_name": "stat_script_info_binary",
 			"parameters": {
 				"static": [
 						{
@@ -205,7 +204,7 @@
 				]
 			}
 		},
-		"stat_script_info_bynary": {
+		"stat_script_info_binary": {
 			"name": "Stat script info binary",
 			"schema": "exec.basic",
 			"parameters": {
