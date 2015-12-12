@@ -7,10 +7,6 @@ xPL messages
 
 
 
-"exec.basic { type='script_info_number | script_info_binary | script_action'  program='/path/program [parameters]'  status='start' }"
-
-
-
 xpl-cmnd
 --------
 
