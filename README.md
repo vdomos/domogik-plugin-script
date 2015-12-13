@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Script plugin (**develop version**) is used to run shell scripts with optionnal parameters with Domogik
+The **Script** plugin (**develop version**) is used to run shell scripts with optionnal parameters with Domogik
 
 This is a package for Domogik : http://www.domogik.org
 
