@@ -6,8 +6,8 @@ Changelog
 ===
 
 * Adding **Script Info Binary**
-* Sensor scripts (**Script Info Binary** and **Script Info Number**) will be execute every n secondes configured in the admin interface. 
-Not more need a scenario to do that.
+* Sensor scripts (**Script Info Binary** and **Script Info Number**) will be executed every n secondes configured in the admin interface. Don't need a scenario to do that anymore.
+* Changing xPL messages format
 
 
 0.1
