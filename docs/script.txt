@@ -7,8 +7,16 @@ Plugin Script
 Purpose
 =======
 
-The Script plugin is used to run shell scripts with optionnal parameters with Domogik
+The Script plugin is used to run Linux scripts with Domogik
 
+.. note::
+	The plugin can excecute any **executable** scripts programs (shell, python, perl ...) or compiled binary programs.
+	
+	* The script must send a return code to '0'
+	* The "sensor" scripts must return a value corresponding to the type of the script (Number, Boolean)
+	* Otherwise the execution will be **failed**
+	* The plugin log is very verbose and have to allow to verify the good execution of the script
+	
 
 Plugin Information Page
 -----------------------
