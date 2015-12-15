@@ -71,8 +71,8 @@ class XplScriptManager(XplPlugin):
 			#self.log.info(u"a_device:   %s" % format(a_device))
 			
 			device_name = a_device["name"]										# Ex.: "Conso Elec Jour"
-			device_typeid = a_device["device_type_id"]							# Ex.: "script.info_number | script.info_binary | script.action"
-			device_statname = device_typeid.replace('.', '_')					# Ex.: "script_info_number | script_info_binary | script_action"
+			device_typeid = a_device["device_type_id"]							# Ex.: "script.info_number | script.info_binary | script.info_string | script.action"
+			device_statname = device_typeid.replace('.', '_')					# Ex.: "script_info_number | script_info_binary | script_info_string | script_action"
 			command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_statname, "program")	# Ex.: "/home/user/getElec.sh -jour"
 			if device_typeid != "script.action":								# Shedule only script_info_* scripts
 				command_interval = self.get_parameter(a_device, "interval")		# Ex.: "60" in secondes

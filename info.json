@@ -76,6 +76,28 @@
 					"type": "string"
 				}
 			]
+		},
+		"script.info_string": {
+			"id": "script.sensor_string",
+			"description": "Script to read a string Sensor", 
+			"name": "Script Info String",
+			"commands": [],
+			"sensors": ["sensor_script_info_string"],
+			"parameters": [
+				{
+					"key": "interval",
+					"xpl": false,
+					"description": "Interval in secondes between executions (plugin must be restart).",
+					"type": "integer",
+					"default": "60"
+				},
+				{
+					"key": "program",
+					"xpl": true,
+					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+					"type": "string"
+				}
+			]
 		}
 	},
 
@@ -171,6 +193,26 @@
 					}
 				]
 			}
+		},
+		"stat_script_info_string": {
+			"name": "Stat script info string",
+			"schema": "exec.basic",
+			"parameters": {
+				"static": [
+						{
+							"key": "type",
+							"value": "script_info_string"
+						}
+					],
+				"device": [],
+				"dynamic": [
+					{
+						 "key": "status",
+						 "ignore_values": "",
+						 "sensor": "sensor_script_info_string"
+					}
+				]
+			}
 		}
 	},
 
@@ -207,6 +249,20 @@
 			"name": "Script Info Bin",
 			"incremental" : false,
 			"data_type": "DT_Bool",
+			"conversion": "",
+			"timeout" : 0,
+			"history": {
+				"store": true,
+				"duplicate" : true,
+				"max": 0,
+				"expire": 0,
+				"round_value": 0
+			}
+		},
+		"sensor_script_info_string": {
+			"name": "Script Info String",
+			"incremental" : false,
+			"data_type": "DT_String",
 			"conversion": "",
 			"timeout" : 0,
 			"history": {

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The **Script** plugin (**develop version**) is used to run shell scripts with optionnal parameters with Domogik
+The **Script** plugin (**develop version**) is used to run Linux scripts with Domogik
 
 This is a package for Domogik : http://www.domogik.org
 
@@ -19,4 +19,5 @@ http://domogik-plugin-script.readthedocs.org/en/develop
 
 To install this package on your Domogik system, you can go in this GitHub repository releases page and get the link to a release .zip file. Then you just have to do :
 
-    dmg_package -i https://github.com/vdomos/domogik-plugin-script/archive/master.zip
+    dmg_package -i https://github.com/vdomos/domogik-plugin-script/archive/develop.zip
+ 

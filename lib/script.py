@@ -77,12 +77,12 @@ class Script:
 			if not self.is_number(outputcmd):
 				self.log.error("### Script type Number '%s' not return a number: '%s'" % (script, outputcmd))
 				return "failed"
-		else:
+		elif  (type == "script_info_binary"): 
 			if outputcmd not in ['0', '1']:	
 				self.log.error("### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd))
 				return "failed"
 
-		return outputcmd
+		return outputcmd	# Return value for "script.info_number | script.info_binary | script.info_string"
 
 			
 	def is_number(self, s):
