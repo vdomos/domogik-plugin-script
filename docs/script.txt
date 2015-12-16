@@ -23,7 +23,10 @@ Plugin Information Page
 
 .. image:: Domogik_Device_Plugin-Script_16.png
 
-
+.. warning::	
+	This versin is not compatible with the stable version, it's necessary to recreate devices for use it.
+	
+	
 Dependencies
 ============
 
