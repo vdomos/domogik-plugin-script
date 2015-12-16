@@ -5,8 +5,8 @@ Changelog
 0.2
 ===
 
-* Adding **Script Info Binary**
-* Sensor scripts (**Script Info Binary** and **Script Info Number**) will be executed every n secondes configured in the admin interface. Don't need a scenario to do that anymore.
+* Adding **Script Info Binary** and **Script Info String**
+* Sensor scripts (**Script Info Binary**, **Script Info Number** and **Script Info String**) will be executed every n secondes configured in the admin interface. Don't need a scenario to do that anymore.
 * Changing xPL messages format
 * **WARNING**: This version is not compatible with the **stable** version, it's necessary to recreate the devices.
 
