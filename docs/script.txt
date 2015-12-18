@@ -155,7 +155,7 @@ program               string                      Executable filename, including
 
 
 .. warning::	
-	Specials characters like '>','<', '|' are not authorized in **program** fields.
+	Specials characters like **>**, **<**, **|**, simple quote **'** and double quote **"** are not authorized in **program** fields.
 
 
 Configuration example:
