@@ -203,10 +203,10 @@ Example in Domoweb interface:
 Troubleshooting
 ===============
 
-If the plugin script are not execute, please check ERROR in th plugin log like this : ::
+If the plugin script are not execute, please check **ERROR** in th plugin log like this : ::
 
 	$ grep "ERROR"  /var/log/domogik/xplplugin_script.log
-	2015-12-19 00:05:55,231 domogik-script ERROR ### Script type Number 'ssh jdom /home/USER/bin/listdatawatermysql.sh -jour' not return a number: 'NULL'
+	2015-12-19 00:05:55,231 domogik-script ERROR ### Script type Number '/home/USER/bin/listdatawatermysql.sh -jour' not return a number: 'NULL'
 	2015-12-19 00:30:07,310 domogik-script ERROR ### Script '/home/USER/bin/test.sh "canape on" > /dev/null' is refused: specials characters like '>','<'
 	2015-12-19 00:35:20,835 domogik-script ERROR ### Script '/home/USER/bin/notexecutable.sh' failed with OSerror : 13, (Permission denied)
 	2015-12-19 00:35:37,887 domogik-script ERROR ### Script '/home/USER/bin/notexist.sh' failed with OSerror : 2, (No such file or directory)
