@@ -13,11 +13,10 @@ The Script plugin is used to run Linux scripts with Domogik
 	The plugin can excecute any **executable** scripts programs (shell, python, perl ...) or compiled binary programs.
 	
 	* The script must send a return code **0**
-	* The **sensor** scripts must return a value corresponding to the type of the script (Number, Binary, String)
-	* Otherwise the execution will be **failed**
-	* The plugin log can help to find the execution error
+	* The **sensor** scripts must return a value corresponding to the type of the script (Number, Binary, String), Otherwise the execution will be **failed**
 	* There are specials characters like '>','<', '|', that are not authorized in **program** fields otherwise the script return **failed**
 	* if you want to run complex scripts, the best way will be to write a script in Linux Shell, Python, Perl or other and call it by the plugin !
+	* The plugin log can help to find the execution error (see troubleshooting section below)
 	
 
 
