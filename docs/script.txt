@@ -16,7 +16,10 @@ The Script plugin is used to run Linux scripts with Domogik
 	* The **sensor** scripts must return a value corresponding to the type of the script (Number, Binary, String)
 	* Otherwise the execution will be **failed**
 	* The plugin log can help to find the execution error
+	* There are specials characters like '>','<', '|', that are not authorized in **program** fields otherwise the script return **failed**
+	* if you want to run complex scripts, the best way will be to write a script in Linux Shell, Python, Perl or other and call it by the plugin !
 	
+
 
 Plugin Information Page
 -----------------------
@@ -155,7 +158,7 @@ program               string                      Executable filename, including
 
 
 .. warning::	
-	Specials characters like '>','<', '|', simple quote ' and double quote " are not authorized in **program** fields.
+	Specials characters like '>','<', '|' are not authorized in **program** fields.
 
 
 Configuration example:
@@ -195,3 +198,16 @@ Example in Domoweb interface:
 
 .. image:: Domogik_Device_Plugin-Script_18.png
 
+
+
+
+Troubleshooting
+===============
+
+If the plugin script are not execute, please check ERROR in th plugin log like this : ::
+
+$ grep "ERROR"  /var/log/domogik/xplplugin_script.log
+2015-12-19 00:05:55,231 domogik-script ERROR ### Script type Number 'ssh jdom /home/USER/bin/listdatawatermysql.sh -jour' not return a number: 'NULL'
+2015-12-19 00:30:07,310 domogik-script ERROR ### Script '/home/USER/bin/test.sh "canape on" > /dev/null' is refused: specials characters like '>','<'
+2015-12-19 00:35:20,835 domogik-script ERROR ### Script '/home/USER/bin/notexecutable.sh' failed with OSerror : 13, (Permission denied)
+2015-12-19 00:35:37,887 domogik-script ERROR ### Script '/home/USER/bin/notexist.sh' failed with OSerror : 2, (No such file or directory)

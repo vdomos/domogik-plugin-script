@@ -29,7 +29,7 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 import time
 import traceback
 import subprocess
-
+import shlex
 
 class ScriptException(Exception):
 	"""
@@ -60,15 +60,22 @@ class Script:
 			script : 	script (list)
 			type :		Scritp type
 		"""
-		cmd = script.strip().split(" ")
+		#cmd = script.strip().split(" ")
+		
+		if any(i in script for i in '<|>'):
+			self.log.error("### Script '%s' is refused: specials characters like '>','<', '|' are not authorized" % script)
+			return "failed"
+			
+		cmd = shlex.split(script.strip())			# For splitting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
 		self.log.info("==> Execute subprocess for '%s'" % cmd)
+		
 		try:
 			outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
 		except subprocess.CalledProcessError, e:
-			self.log.error("### Command '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
+			self.log.error("### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
 			return "failed"
 		except OSError, e: 
-			self.log.error("### Command '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
+			self.log.error("### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
 			return "failed"
 
 		if  (type == "script_action"): 
