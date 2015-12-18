@@ -58,17 +58,16 @@ class Script:
 	def runCmd(self, script, type):
 		""" Execute shell command.
 			script : 	script (list)
-			type :		Scritp type
+			type :		Script type
 		"""
-		#cmd = script.strip().split(" ")
 		
 		if any(i in script for i in '<|>'):
 			self.log.error("### Script '%s' is refused: specials characters like '>','<', '|' are not authorized" % script)
 			return "failed"
 			
-		cmd = shlex.split(script.strip())			# For splitting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
-		self.log.info("==> Execute subprocess for '%s'" % cmd)
-		
+		cmd = shlex.split(script.strip())			# For spliting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
+
+		self.log.info("==> Execute subprocess for '%s'" % cmd)		
 		try:
 			outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
 		except subprocess.CalledProcessError, e:
