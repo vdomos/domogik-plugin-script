@@ -104,12 +104,11 @@ class Script:
 			interval : 		Interval in seconde to execute script
 		"""
 		while not stop.isSet():
-			log.info("==> Execute scheduled script '%s' for device '%s' (type %s)" % (devname, script, scripttype))
+			log.info("==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
 			resultcmd = self.runCmd(script, scripttype)	
 			log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
 			sendxpl("xpl-trig", {"program" : script, "type" : scripttype, "status" : resultcmd})
-			time.sleep(interval)
-	
+			stop.wait(interval)
 	
 
 
