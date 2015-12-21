@@ -62,30 +62,30 @@ class Script:
 		"""
 		
 		if any(i in script for i in '<|>'):
-			self.log.error("### Script '%s' is refused: specials characters like '>','<', '|' are not authorized" % script)
+			self.log.error(u"### Script '%s' is refused: specials characters like '>','<', '|' are not authorized" % script)
 			return "failed"
 			
 		cmd = shlex.split(script.strip())			# For spliting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
 
-		self.log.info("==> Execute subprocess for '%s'" % cmd)		
+		self.log.info(u"==> Execute subprocess for '%s'" % cmd)		
 		try:
 			outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
 		except subprocess.CalledProcessError, e:
-			self.log.error("### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
+			self.log.error(u"### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
 			return "failed"
 		except OSError, e: 
-			self.log.error("### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
+			self.log.error(u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
 			return "failed"
 
 		if  (type == "script_action"): 
 			return "executed"
 		elif  (type == "script_info_number"): 
 			if not self.is_number(outputcmd):
-				self.log.error("### Script type Number '%s' not return a number: '%s'" % (script, outputcmd))
+				self.log.error(u"### Script type Number '%s' not return a number: '%s'" % (script, outputcmd))
 				return "failed"
 		elif  (type == "script_info_binary"): 
 			if outputcmd not in ['0', '1']:	
-				self.log.error("### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd))
+				self.log.error(u"### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd))
 				return "failed"
 
 		return outputcmd	# Return value for "script.info_number | script.info_binary | script.info_string"
@@ -110,9 +110,9 @@ class Script:
 			interval : 		Interval in seconde to execute script
 		"""
 		while not stop.isSet():
-			log.info("==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+			log.info(u"==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
 			resultcmd = self.runCmd(script, scripttype)	
-			log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
+			log.debug(u"==> Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
 			sendxpl("xpl-trig", {"program" : script, "type" : scripttype, "status" : resultcmd})
 			stop.wait(interval)
 	

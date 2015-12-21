@@ -28,7 +28,7 @@ Implements
 ==========
 
 
-@author: domos  (domos p vesta at gmail p com)
+@author: domos  (domos dt vesta at gmail dt com)
 @copyright: (C) 2007-2015 Domogik project
 @license: GPL(v3)
 @organization: Domogik
@@ -101,7 +101,7 @@ class XplScriptManager(XplPlugin):
 		
 		
 		# Create listeners
-		self.log.info("==> Creating listener for Script")    
+		self.log.info(u"==> Creating listener for Script")    
 		Listener(self.scriptCmnd_cb, self.myxpl, {'xpltype': 'xpl-cmnd', 'schema': 'exec.basic'})
 				
 		self.ready()
@@ -116,25 +116,25 @@ class XplScriptManager(XplPlugin):
 			program : 	Executable filename, including path and extension
 			status : 	'start' for running program
 		"""
-		self.log.debug("==> Call scriptCmnd_cb")
+		self.log.debug(u"==> Call scriptCmnd_cb")
 
 		scripttype = message.data['type']
 		if (scripttype != "script_info_number") and (scripttype != "script_info_binary") and (scripttype != "script_action"):
-			self.log.error("### This command type %s' is not for Domogik Script plugin" % message.data['type'] )
+			self.log.error(u"### This command type %s' is not for Domogik Script plugin" % message.data['type'] )
 			return
 		if message.data['status'] != "start":
-			self.log.error("### This command with status '%s' is not for Domogik Script plugin" % message.data['status'] )
+			self.log.error(u"### This command with status '%s' is not for Domogik Script plugin" % message.data['status'] )
 			return
 		program = message.data['program'].strip()
 	
 		# Execute program
-		self.log.info("==> Execute requested script '%s' type '%s'" % (program, scripttype))
+		self.log.info(u"==> Execute requested script '%s' type '%s'" % (program, scripttype))
 		
 		# call program
 		resultcmd = self.script.runCmd(program, scripttype)		# resultcmd = "executed|value|failed"
  
 		# Send ACK xpl-trig message to xpl-cmnd command.
-		self.log.debug("==> Send xpl-trig msg for script with return '%s'" % resultcmd)
+		self.log.debug(u"==> Send xpl-trig msg for script with return '%s'" % resultcmd)
 		self.send_xpl("xpl-trig", {"program" : program, "type" : scripttype, "status" : resultcmd})
 
 
@@ -147,7 +147,7 @@ class XplScriptManager(XplPlugin):
 		msg.set_schema("exec.basic")
 		for element in data:
 			msg.add_data({element : data[element]})
-		self.log.debug("==> Send xpl message...")
+		self.log.debug(u"==> Send xpl message...")
 		self.log.debug(msg)
 		self.myxpl.send(msg)
 
