@@ -156,6 +156,10 @@ program               string                      Executable filename, including
 ===================== =========================== ======================================================================
 
 
+.. note::
+	Possibility to disable a script with interval set to **'-1'** after configuration (plugin must be restart).
+
+
 .. warning::	
 	Specials characters like '>','<', '|' are not authorized in **program** fields.
 
