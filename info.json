@@ -43,7 +43,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in secondes between executions (plugin must be restart).",
+					"description": "Interval in secondes between executions (-1 to disabled script) (plugin must be restart).",
 					"type": "integer",
 					"default": "60"
 				},
@@ -65,7 +65,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in secondes between executions (plugin must be restart).",
+					"description": "Interval in secondes between executions (-1 to disabled script) (plugin must be restart).",
 					"type": "integer",
 					"default": "60"
 				},
@@ -87,7 +87,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in secondes between executions (plugin must be restart).",
+					"description": "Interval in secondes between executions (-1 to disabled script) (plugin must be restart).",
 					"type": "integer",
 					"default": "60"
 				},
@@ -253,7 +253,7 @@
 			"timeout" : 0,
 			"history": {
 				"store": true,
-				"duplicate" : true,
+				"duplicate" : false,
 				"max": 0,
 				"expire": 0,
 				"round_value": 0
@@ -267,7 +267,7 @@
 			"timeout" : 0,
 			"history": {
 				"store": true,
-				"duplicate" : true,
+				"duplicate" : false,
 				"max": 0,
 				"expire": 0,
 				"round_value": 0

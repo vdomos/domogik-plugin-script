@@ -77,12 +77,11 @@ class XplScriptManager(XplPlugin):
 			if device_typeid != "script.action":								# Shedule only script_info_* scripts
 				command_interval = self.get_parameter(a_device, "interval")		# Ex.: "60" in secondes
 				self.log.info(u"==> Device '{0}' ({1}) to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
-				if command_interval <= 0:
-					command_interval = 0
-				thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
-				self.log.info(u"==> Launch thread '%s' for '%s' device !" % (thr_name, device_name))
-				threads = {}
-				threads[thr_name] = threading.Thread(None, 
+				if command_interval > 0:
+					thr_name = "dev_{0}-{1}".format(a_device['id'], "script_info")
+					self.log.info(u"==> Launch script thread '%s' for '%s' device !" % (thr_name, device_name))
+					threads = {}
+					threads[thr_name] = threading.Thread(None, 
 										self.script.runScheduledCmd,
 										thr_name,
 										(self.log,
@@ -94,8 +93,11 @@ class XplScriptManager(XplPlugin):
 											self.get_stop()
 										),
 									{})
-				threads[thr_name].start()
-				self.register_thread(threads[thr_name])
+					threads[thr_name].start()
+					self.register_thread(threads[thr_name])
+				else:
+					self.log.info(u"==> Script thread '%s' for '%s' device is DISABLED (interval < 0) !" % (thr_name, device_name))
+					
 			else:
 				self.log.info(u"==> Device '{0}' ({1}) to call = '{2}'".format(device_name, device_typeid, command_script))
 		
