@@ -7,7 +7,7 @@ Plugin Script
 Purpose
 =======
 
-The Script plugin is used to run shell scripts with optionnal parameters with Domogik
+The Script plugin is used to run Linux scripts/programs with Domogik
 
 
 Plugin Information Page
