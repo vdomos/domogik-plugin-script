@@ -12,6 +12,7 @@ The Script plugin is used to run Linux scripts/programs with Domogik
 .. note::
 	The plugin can excecute any **executable** scripts programs (shell, python, perl ...) or compiled binary programs.
 	
+	* For script, the source must begin with a **shebang** like "#!/bin/bash" for shell script or "#!/usr/bin/python" for python script to be exexute otherwise a "Exec format error" occur.
 	* The script must send a return code **0**
 	* The **sensor** scripts must return a value corresponding to the type of the script (Number, Binary, String), Otherwise the execution will be **failed**
 	* There are specials characters like '>','<', '|', that are not authorized in **program** fields otherwise the script return **failed**
@@ -206,7 +207,7 @@ Example in Domoweb interface:
 Script/programs examples
 ========================
 
-There is a repository for scripts examples to give some ideas. This repository is available here (thamks Tikismoke):
+There is a repository for scripts examples to give some ideas. This repository is available here (thanks Tikismoke):
 
 https://github.com/tikismoke/domogik-example-script
 
