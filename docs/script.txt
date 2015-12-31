@@ -203,11 +203,23 @@ Example in Domoweb interface:
 
 
 
+Script/programs examples
+========================
+
+There is a repository for scripts examples to give some ideas. This repository is available here (thamks Tikismoke):
+
+https://github.com/tikismoke/domogik-example-script
+
+
+.. warning::
+        CAUTION: The scripts provided on this website are provided as is for example, no guarantee of proper operation in all cases and that the use is at your risk and your responsibility.
+
+
 
 Troubleshooting
 ===============
 
-If the plugin script are not execute, please check **ERROR** in th plugin log like this : ::
+If the plugin script are not execute, please check **ERROR** in the plugin log like this : ::
 
 	$ grep "ERROR"  /var/log/domogik/xplplugin_script.log
 	2015-12-19 00:05:55,231 domogik-script ERROR ### Script type Number '/home/USER/bin/listdatawatermysql.sh -jour' not return a number: 'NULL'
