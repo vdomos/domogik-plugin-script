@@ -26,7 +26,6 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 @organization: Domogik
 """
 
-import time
 import traceback
 import subprocess
 import shlex
@@ -61,8 +60,8 @@ class Script:
 			type :		Script type
 		"""
 		
-		if any(i in script for i in '<|>'):
-			self.log.error(u"### Script '%s' is refused: specials characters like '>','<', '|' are not authorized" % script)
+		if any(i in script for i in '<|>&'):
+			self.log.error(u"### Script '%s' is refused: specials characters like '>', '<', '|', '&' are not authorized" % script)
 			return "failed"
 			
 		cmd = shlex.split(script.strip())			# For spliting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
@@ -75,6 +74,9 @@ class Script:
 			return "failed"
 		except OSError, e: 
 			self.log.error(u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
+			if e.errno == 8:
+				self.log.error(u"### Script '%s': missing 'shebang' at top of the script or bad arch for binary program !" % script)
+				
 			return "failed"
 
 		if  (type == "script_action"): 
@@ -112,7 +114,7 @@ class Script:
 		while not stop.isSet():
 			log.info(u"==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
 			resultcmd = self.runCmd(script, scripttype)	
-			log.debug(u"==> Send xpl-trig msg for script with return '%s'" % resultcmd)     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
+			log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (script, resultcmd))     	# xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
 			sendxpl("xpl-trig", {"program" : script, "type" : scripttype, "status" : resultcmd})
 			stop.wait(interval)
 	

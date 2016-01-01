@@ -42,6 +42,7 @@ from domogik_packages.plugin_script.lib.script import Script
 from domogik_packages.plugin_script.lib.script import ScriptException
 
 import threading
+import time
 
 
 class XplScriptManager(XplPlugin):
@@ -95,6 +96,8 @@ class XplScriptManager(XplPlugin):
 									{})
 					threads[thr_name].start()
 					self.register_thread(threads[thr_name])
+					self.log.info(u"==> Wait some time before running the next scheduled script ...")
+					time.sleep(5)		# Wait some time to not start the script with the same interval et the same time.
 				else:
 					self.log.info(u"==> Script thread '%s' for '%s' device is DISABLED (interval < 0) !" % (thr_name, device_name))
 					
@@ -136,7 +139,7 @@ class XplScriptManager(XplPlugin):
 		resultcmd = self.script.runCmd(program, scripttype)		# resultcmd = "executed|value|failed"
  
 		# Send ACK xpl-trig message to xpl-cmnd command.
-		self.log.debug(u"==> Send xpl-trig msg for script with return '%s'" % resultcmd)
+		self.log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (program, resultcmd))
 		self.send_xpl("xpl-trig", {"program" : program, "type" : scripttype, "status" : resultcmd})
 
 
