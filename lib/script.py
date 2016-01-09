@@ -114,6 +114,6 @@ class Script:
         while not stop.isSet():
             log.info(u"==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
             resultcmd = self.runCmd(script, scripttype)
-            log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (script, resultcmd))         # xpl-trig exec.basic { pid='cmd_action|cmd_info' program='/path/program' arg='parameters ...' status='executed|value' }
-            sendxpl("xpl-trig", {"program": script, "type": scripttype, "status": resultcmd})
+            log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (script, resultcmd))         # xpl-trig exec.basic { pid='cmd_action|cmd_info' command='/path/program' arg='parameters ...' status='executed|value' }
+            sendxpl("xpl-trig", {"command": script, "type": scripttype, "status": resultcmd})
             stop.wait(interval)

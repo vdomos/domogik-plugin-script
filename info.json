@@ -7,10 +7,10 @@
 		"tags": ["computer"], 
 		"dependencies": [],
 		"description": "Domogik Plugin for scripts", 
-		"domogik_min_version": "0.4.0", 
+		"domogik_min_version": "0.5.0", 
 		"name": "script", 
 		"type": "plugin", 
-		"version": "0.2"
+		"version": "1.0"
 	}, 
 
 	"products" : [],
@@ -26,7 +26,7 @@
 			"sensors": ["sensor_script_action"],
 			"parameters": [
 				{
-					"key": "program",
+					"key": "command",
 					"xpl": true,
 					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
 					"type": "string"
@@ -48,7 +48,7 @@
 					"default": "60"
 				},
 				{
-					"key": "program",
+					"key": "command",
 					"xpl": true,
 					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
 					"type": "string"
@@ -70,7 +70,7 @@
 					"default": "60"
 				},
 				{
-					"key": "program",
+					"key": "command",
 					"xpl": true,
 					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
 					"type": "string"
@@ -92,7 +92,7 @@
 					"default": "60"
 				},
 				{
-					"key": "program",
+					"key": "command",
 					"xpl": true,
 					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
 					"type": "string"

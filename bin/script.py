@@ -73,7 +73,7 @@ class XplScriptManager(XplPlugin):
             device_name = a_device["name"]                                      # Ex.: "Conso Elec Jour"
             device_typeid = a_device["device_type_id"]                          # Ex.: "script.info_number | script.info_binary | script.info_string | script.action"
             device_statname = device_typeid.replace('.', '_')                   # Ex.: "script_info_number | script_info_binary | script_info_string | script_action"
-            command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_statname, "program")    # Ex.: "/home/user/getElec.sh -jour"
+            command_script = self.get_parameter_for_feature(a_device, "xpl_stats", "stat_" + device_statname, "command")    # Ex.: "/home/user/getElec.sh -jour"
             if device_typeid != "script.action":                                # Shedule only script_info_* scripts
                 command_interval = self.get_parameter(a_device, "interval")     # Ex.: "60" in secondes
                 self.log.info(u"==> Device '{0}' ({1}) to call = '{2}' with interval = {3}s".format(device_name, device_typeid, command_script, command_interval))
@@ -82,17 +82,17 @@ class XplScriptManager(XplPlugin):
                     self.log.info(u"==> Launch script thread '%s' for '%s' device !" % (thr_name, device_name))
                     threads = {}
                     threads[thr_name] = threading.Thread(None,
-                                            self.script.runScheduledCmd,
-                                            thr_name,
-                                            (self.log,
-                                                device_name,
-                                                device_statname,
-                                                command_script,
-                                                command_interval,
-                                                self.send_xpl,
-                                                self.get_stop()
-                                            ),
-                                        {})
+                                                        self.script.runScheduledCmd,
+                                                        thr_name,
+                                                        (self.log,
+                                                            device_name,
+                                                            device_statname,
+                                                            command_script,
+                                                            command_interval,
+                                                            self.send_xpl,
+                                                            self.get_stop()
+                                                        ),
+                                                    {})
                     threads[thr_name].start()
                     self.register_thread(threads[thr_name])
                     self.log.info(u"==> Wait some time before running the next scheduled script ...")
@@ -111,12 +111,12 @@ class XplScriptManager(XplPlugin):
 
 
     def scriptCmnd_cb(self, message):
-        """ Call script lib for run program
+        """ Call script lib for run command
             @param
             message :    xpl message
             type :         Command type, must be set to "script.info_number | script.info_binary | script.action"
-            program :     Executable filename, including path and extension
-            status :     'start' for running program
+            command :     Executable filename, including path and extension
+            status :     'start' for running command
         """
         self.log.debug(u"==> Call scriptCmnd_cb")
 
@@ -127,17 +127,17 @@ class XplScriptManager(XplPlugin):
         if message.data['status'] != "start":
             self.log.error(u"### This command with status '%s' is not for Domogik Script plugin" % message.data['status'])
             return
-        program = message.data['program'].strip()
+        command = message.data['command'].strip()
 
-        # Execute program
-        self.log.info(u"==> Execute requested script '%s' type '%s'" % (program, scripttype))
+        # Execute command
+        self.log.info(u"==> Execute requested script '%s' type '%s'" % (command, scripttype))
 
-        # call program
-        resultcmd = self.script.runCmd(program, scripttype)        # resultcmd = "executed|value|failed"
+        # call command
+        resultcmd = self.script.runCmd(command, scripttype)        # resultcmd = "executed|value|failed"
 
         # Send ACK xpl-trig message to xpl-cmnd command.
-        self.log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (program, resultcmd))
-        self.send_xpl("xpl-trig", {"program": program, "type": scripttype, "status": resultcmd})
+        self.log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (command, resultcmd))
+        self.send_xpl("xpl-trig", {"command": command, "type": scripttype, "status": resultcmd})
 
 
     def send_xpl(self, type, data):
