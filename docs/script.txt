@@ -7,29 +7,12 @@ Plugin Script
 Purpose
 =======
 
-The Script plugin is used to run Linux scripts/programs with Domogik
+The Script plugin is used to run some Linux scripts/command lines with Domogik.
 
-.. note::
-	The plugin can excecute any **executable** scripts programs (shell, python, perl ...) or compiled binary programs.
-	
-	* For script, the source must begin with a **shebang** like "#!/bin/bash" for shell script or "#!/usr/bin/python" for python script to be exexute otherwise a "Exec format error" occur.
-	* The script must send a return code **0**
-	* The **sensor** scripts must return a value corresponding to the type of the script (Number, Binary, String), Otherwise the execution will be **failed**
-	* There are specials characters like '>', '<', '|', '&' that are not authorized in **program** fields otherwise the script return **failed**
-	* if you want to run complex scripts, the best way will be to write a script in Linux Shell, Python, Perl or other and call it by the plugin !
-	* The plugin log can help to find the execution error (see **troubleshooting** section below)
-	
+The plugin can excecute any **executable** script or program (shell, python, perl ...) or compiled binary programs.
 
 
-Plugin Information Page
------------------------
-
-.. image:: Domogik_Device_Plugin-Script_16.png
-
-.. warning::	
-	This version is not compatible with the **stable** version, it's necessary to recreate the devices.
-	
-	
+    
 Dependencies
 ============
 
@@ -43,146 +26,119 @@ No configuration needed for the plugin
 Create the domogik devices
 ==========================
 
-There is 4 device types:
-
-   
-.. image:: Domogik_Device_Plugin-Script_19.png
-
-
-
 Domogik device type : **Script Action**
 ---------------------------------------
 
-This is a **command** device that will execute a script.
+This is a **command** device that will execute a script or command line. The usage is to run something.
 
-**Script Action**, It is use to run any executable file to do a action.
+This is a trigger command : there is no status (like on/off) and the command line to run will always be the same.
 
-.. note::
-	The "**Script Action**" return a xpl-stat **DT_Tigger** sensor.
+You need to configure this parameter :
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
 
 
-Example script that can be run (for setting lights of the living room for example): ::
+Example command line that can be run (for setting lights of the living room for example): ::
 
-	$ ~/bin/setLum.sh salon on
+    $ ~/bin/setLum.sh salon on
+    
+In this case, please notice that you will have to create another device to set the lights off. Example ::
+
+    $ ~/bin/setLum.sh salon off
 
 
-	
+    
 Domogik device type : **Script Info Binary**
 --------------------------------------------
 
-This is a **sensors** device that will return a **boolean** value after executing the script.
+This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
 
-**Script Info Binary**, It's use to run any executable file to retrieve a **boolean** value. The script will be execute every n secondes configured in the admin interface.
+The value is a **boolean**. The value displayed by the script or command line can be ``0`` or ``1``.
 
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+interval              number                      The time in seconds between two executions of the command line
+--------------------- --------------------------- ----------------------------------------------------------------------
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
 
-.. note::
-	The "**Script Info Binary**" return a xpl-stat **DT_Bool** sensor.
+    
+.. warning::    
+    The shell script of a **Script Info Binary device** should only return **'0'|'1'** with or without a ending '\\n' 
+    otherwise you will get an error.
 
-	
-.. warning::	
-	The shell script of a **Script Info Binary device** should only return **'0'|'1'** with or without a ending '\\n' 
-	otherwise the xpl-stat message will return a **failed** status.
-
-	
+    
 Example script that can be run (to get the status of a process for example): ::
 
-	$ ~/bin/check_process.sh lcdmeteo.py
-	1
-
+    $ ~/bin/check_process.sh lcdmeteo.py
+    1
 
 
 Domogik device type : **Script Info Number**
 --------------------------------------------
 
-This is a **sensor** device that will return a **number** value after executing the script.
+This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
 
-**Script Info Number**, It's use to run any executable file to retrieve a **number** value. The script will be execute every n secondes configured in the admin interface.
+The value is a **number** or **float**. The value displayed by the script or command line can be for example : ``3``, ``43.2``, ...
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+interval              number                      The time in seconds between two executions of the command line
+--------------------- --------------------------- ----------------------------------------------------------------------
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
 
 
-.. note::
-	The "**Script Info Number**" return a xpl-stat **DT_Number** sensor.
+.. warning::    
+    The shell script of a **Script Info Number device** should only return a **number** with or without a ending '\\n' 
+    otherwise you will get an error.
 
-	
-.. warning::	
-	The shell script of a **Script Info Number device** should only return a **number** with or without a ending '\\n' 
-	otherwise the xpl-stat message will return a **failed** status.
-
-	
+    
 Example script that can be run (to get the power consumption of the day for example): ::
 
-	$ ~/bin/getElec.sh -jour
-	0.270
+    $ ~/bin/getElec.sh -jour
+    0.270
 
 
 Domogik device type : **Script Info String**
 --------------------------------------------
 
-This is a **sensor** device that will return a **string** value after executing the script.
+This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
 
-**Script Info string**, It's use to run any executable file to retrieve a **string** value. The script will be execute every n secondes configured in the admin interface.
+The value is a **string**. The value displayed by the script or command line can be whatever you want, but it must use only one line!
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+interval              number                      The time in seconds between two executions of the command line
+--------------------- --------------------------- ----------------------------------------------------------------------
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
 
 
-.. note::
-	The "**Script Info string**" return a xpl-stat **DT_String** sensor.
-
-	
-	
 Example script that can be run (to get Weather warning for a location for example): ::
 
-	$ curl -s http://domogeek.entropialux.com/vigilance/78/color
-	vert
+    $ curl -s http://domogeek.entropialux.com/vigilance/78/color
+    vert
 
 
-Device parameters configuration
--------------------------------
+Additionnal informations about the devices creation
+---------------------------------------------------
 
-One parameters are needed for a domogik **Script Action** device creation:
-
-===================== =========================== ======================================================================
-Key                   Type                        Description
-===================== =========================== ======================================================================
-program               string                      Executable filename, including path, extension and arguments
-===================== =========================== ======================================================================
-
-
-
-Two parameters are needed for a domogik **Script Info Number**, **Script Info Binary** or **Script Info String** device creation:
-
-===================== =========================== ======================================================================
-Key                   Type                        Description
-===================== =========================== ======================================================================
-interval              integer                     Interval in secondes between executions (plugin must be restart)
---------------------- --------------------------- ----------------------------------------------------------------------
-program               string                      Executable filename, including path, extension and arguments
-===================== =========================== ======================================================================
-
+If you have some issues with a script, please check the plugin logs in **/var/log/domogik/xplplugin_script.log** (for a default Domogik configuration).
 
 .. note::
-	Possibility to disable a script with interval set to **'-1'** after configuration (plugin must be restart).
+    You can disable a script by setting the interval to **'-1'**.
 
 
-.. warning::	
-	Specials characters like '>','<', '|', '&' are not authorized in **program** fields.
-
-
-Configuration example:
-----------------------
-   
-.. image:: Domogik_Device_Plugin-Script_13.png
-
-.. image:: Domogik_Device_Plugin-Script_14.png
-
-.. image:: Domogik_Device_Plugin-Script_15.png
-
-.. image:: Domogik_Device_Plugin-Script_17.png
-
-
-
-List of example created scripts devices
----------------------------------------
-
-.. image:: Domogik_Device_Plugin-Script_20.png
-
+.. warning::    
+    Specials characters like '>','<', '|', '&' are not authorized in **command** fields.
 
 
 Start the plugin
@@ -196,57 +152,106 @@ Set up your widgets on the user interface
 
 You can now place the widgets of your devices features on the user interface.
 
-Example in Domoweb interface:
-
-.. image:: Domogik_Device_Plugin-Script_10.png
-
-.. image:: Domogik_Device_Plugin-Script_18.png
 
 
+Write a script
+==============
 
-Script/programs examples
-========================
+.. note::
+    In case of error, please check the **Troubleshooting** chapter at the end of this documentation page.
+    
+For all scripts, there are several rules to respect :
 
-There is a repository for scripts examples to give some ideas. This repository is available here (thanks Tikismoke):
+First, the script must begin with a **shebang**, for example : ::
 
-https://github.com/tikismoke/domogik-example-script
+    #!/bin/bash
+    
+A shebang is an important information because it will tell the system which language interpreter must be used (bash, python, etc).
 
+Here are some shebang examples :
+
+* ``#!/bin/bash`` : shell script 
+* ``#!/usr/bin/python`` : python script
+
+If you don't put a shebang in your script, it won't be executed and you will find an **Exec format error** in the plugin log file.
+
+Then, the script must send a return code **0**.
+
+Script/commands examples
+------------------------
+
+There is a repository with scripts examples to give some ideas or use them. This repository is available here (thanks Tikismoke): https://github.com/tikismoke/domogik-example-script
 
 .. warning::
-        **CAUTION**: The scripts provided on this website are provided as is for example, no guarantee of proper operation in all cases and that the use is at your risk and your responsibility.
+    **CAUTION**: The scripts provided on this website are provided as is for example, no guarantee of proper operation in all cases and that the use is at your risk and your responsibility.
+
+
+Special rules depending on the script usage
+-------------------------------------------
+
+Sensor scripts
+**************
+
+They must return a value corresponding to the type of the script (Number, Binary, String), Otherwise the execution will be **failed**.
+
+Here are some script examples.
+
+A **number** script that returns the value 32.4: ::
+
+    #!/bin/bash
+    echo 32.4
+    exit 0
+    
+A **string** script that returns the value 'hello': ::
+
+    #!/bin/bash
+    echo "hello"
+    exit 0
+
+A **binary** script that returns the status true: ::
+
+    #!/bin/bash
+    echo 1
+    exit 0
+    
+A **binary** script that returns the status false: ::
+
+    #!/bin/bash
+    echo 0
+    exit 0
 
 
 
 Troubleshooting
 ===============
 
-If the plugin script are not execute, please check **ERROR** in the plugin log like this : ::
+If a plugin script is not executed, please search for the keyword **ERROR** in the plugin log like this : ::
 
-	$ grep "ERROR"  /var/log/domogik/xplplugin_script.log
+    $ grep "ERROR"  /var/log/domogik/xplplugin_script.log
 
-	
-Here some ERROR type:	
+    
+Here are some ERROR examples:    
 
-The sensor script must return the expected value type (Number, Boolean (binary), String), otherwise this ERROR will occur : ::
+* The sensor script must return the expected value type (Number, Boolean (binary), String), otherwise this ERROR will occur : ::
 
-	2015-12-19 00:05:55,231 domogik-script ERROR ### Script type Number '/home/USER/bin/listdatawatermysql.sh -jour' not return a number: 'NULL'
+    2015-12-19 00:05:55,231 domogik-script ERROR ### Script type Number '/home/USER/bin/listdatawatermysql.sh -jour' not return a number: 'NULL'
 
-Don't use special characters like '>','<', '|', '&', otherwise this ERROR will occur : ::
+* Don't use special characters like '>','<', '|', '&', otherwise this ERROR will occur : ::
 
-	2015-12-19 00:30:07,310 domogik-script ERROR ### Script '/home/USER/bin/test.sh "canape on" > /dev/null' is refused: specials characters like '>','<', '|', '&' are not authorized
-	
-Script must be executable for the user who runs it, otherwise this ERROR will occur	 : ::
+    2015-12-19 00:30:07,310 domogik-script ERROR ### Script '/home/USER/bin/test.sh "canape on" > /dev/null' is refused: specials characters like '>','<', '|', '&' are not authorized
+    
+* Script must be executable for the user who runs it, otherwise this ERROR will occur     : ::
 
-	2015-12-19 00:35:20,835 domogik-script ERROR ### Script '/home/USER/bin/notexecutable.sh' failed with OSerror : 13, (Permission denied)
-	
-Yes, the script must exist in the right path,  otherwise this ERROR will occur : ::
+    2015-12-19 00:35:20,835 domogik-script ERROR ### Script '/home/USER/bin/notexecutable.sh' failed with OSerror : 13, (Permission denied)
+    
+* Yes, the script must exist in the right path,  otherwise this ERROR will occur : ::
 
-	2015-12-19 00:35:37,887 domogik-script ERROR ### Script '/home/USER/bin/notexist.sh' failed with OSerror : 2, (No such file or directory)
-	
-This error might appear when the 'shebang' at top of the script is missing or the binary program is in bad arch (ARM for x86 or the other way around) : ::
+    2015-12-19 00:35:37,887 domogik-script ERROR ### Script '/home/USER/bin/notexist.sh' failed with OSerror : 2, (No such file or directory)
+    
+* This error might appear when the 'shebang' at top of the script is missing or the binary program is in bad arch (ARM for x86 or the other way around) : ::
 
-	2016-01-01 17:17:01,148 domogik-script ERROR ### Script '/home/dan/bin/noshebang.sh' failed with OSerror : 8, (Exec format error)
-	2016-01-01 17:17:01,148 domogik-script ERROR ### Script '/home/dan/bin/noshebang.sh': missing 'shebang' at top of the script or bad arch for binary program !
+    2016-01-01 17:17:01,148 domogik-script ERROR ### Script '/home/dan/bin/noshebang.sh' failed with OSerror : 8, (Exec format error)
+    2016-01-01 17:17:01,148 domogik-script ERROR ### Script '/home/dan/bin/noshebang.sh': missing 'shebang' at top of the script or bad arch for binary program !
 
 
 

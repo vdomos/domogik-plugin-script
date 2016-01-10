@@ -4,7 +4,7 @@
 	"identity": {
 		"author": "vdomos", 
 		"author_email": "domos pt vesta at gmail.com", 
-		"tags": ["computer"], 
+		"tags": ["script, shell, computer"], 
 		"dependencies": [],
 		"description": "Domogik Plugin for scripts", 
 		"domogik_min_version": "0.5.0", 
@@ -43,7 +43,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in secondes between executions (-1 to disabled script) (plugin must be restart).",
+					"description": "Interval in seconds between executions (-1 to disabled script).",
 					"type": "integer",
 					"default": "60"
 				},
@@ -65,7 +65,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in secondes between executions (-1 to disabled script) (plugin must be restart).",
+					"description": "Interval in seconds between executions (-1 to disabled script).",
 					"type": "integer",
 					"default": "60"
 				},
@@ -87,7 +87,7 @@
 				{
 					"key": "interval",
 					"xpl": false,
-					"description": "Interval in secondes between executions (-1 to disabled script) (plugin must be restart).",
+					"description": "Interval in seconds between executions (-1 to disabled script).",
 					"type": "integer",
 					"default": "60"
 				},
@@ -224,8 +224,8 @@
 			"conversion": "from_executed_to_DT_Trigger",
 			"timeout" : 0,
 			"history": {
-				"store": true,
-				"duplicate" : true,
+				"store": false,
+				"duplicate" : false,
 				"max": 0,
 				"expire": 0,
 				"round_value": 0
