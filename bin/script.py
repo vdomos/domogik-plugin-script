@@ -137,7 +137,7 @@ class XplScriptManager(XplPlugin):
 
         # Send ACK xpl-trig message to xpl-cmnd command.
         self.log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (command, resultcmd))
-        self.send_xpl("xpl-trig", {"command": command, "type": scripttype, "status": resultcmd})
+        self.send_xpl(u"xpl-trig", {"command": command, "type": scripttype, "status": resultcmd})
 
 
     def send_xpl(self, type, data):
@@ -146,7 +146,7 @@ class XplScriptManager(XplPlugin):
         """
         msg = XplMessage()
         msg.set_type(type)
-        msg.set_schema("exec.basic")
+        msg.set_schema(u"exec.basic")
         for element in data:
             msg.add_data({element: data[element]})
         self.log.debug(u"==> Send xpl message...")
