@@ -183,7 +183,7 @@ Script/commands examples
 There is a repository with scripts examples to give some ideas or use them. This repository is available here (thanks Tikismoke): https://github.com/tikismoke/domogik-example-script
 
 .. warning::
-    **CAUTION**: The scripts provided on this website are provided as is for example, no guarantee of proper operation in all cases and that the use is at your risk and your responsibility.
+    **CAUTION**: The scripts provided on this website are given as such for example, no guarantee of proper operation in all cases and that the use is at your risk and your responsibility.
 
 
 Special rules depending on the script usage
