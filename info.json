@@ -1,277 +1,277 @@
 {
-	"json_version": 2,
+    "json_version": 2,
 
-	"identity": {
-		"author": "vdomos", 
-		"author_email": "domos pt vesta at gmail.com", 
-		"tags": ["script, shell, computer"], 
-		"dependencies": [],
-		"description": "Domogik Plugin for scripts", 
-		"domogik_min_version": "0.5.0", 
-		"name": "script", 
-		"type": "plugin", 
-		"version": "1.0"
-	}, 
+    "identity": {
+        "author": "vdomos", 
+        "author_email": "domos pt vesta at gmail.com", 
+        "tags": ["script, shell, computer"], 
+        "dependencies": [],
+        "description": "Domogik Plugin for scripts", 
+        "domogik_min_version": "0.5.0", 
+        "name": "script", 
+        "type": "plugin", 
+        "version": "1.0"
+    }, 
 
-	"products" : [],
+    "products" : [],
 
-	"configuration": [],
+    "configuration": [],
 
-	"device_types": {
-		"script.action": {
-			"id": "script.action",
-			"description": "Script to execute a Action", 
-			"name": "Script Action",
-			"commands": ["cmd_script_action"],
-			"sensors": ["sensor_script_action"],
-			"parameters": [
-				{
-					"key": "command",
-					"xpl": true,
-					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
-					"type": "string"
-				}
-			]
-		},
-		"script.info_number": {
-			"id": "script.info_number",
-			"description": "Script to read a Number Sensor", 
-			"name": "Script Info Number",
-			"commands": [],
-			"sensors": ["sensor_script_info_number"],
-			"parameters": [
-				{
-					"key": "interval",
-					"xpl": false,
-					"description": "Interval in seconds between executions (-1 to disabled script).",
-					"type": "integer",
-					"default": "60"
-				},
-				{
-					"key": "command",
-					"xpl": true,
-					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
-					"type": "string"
-				}
-			]
-		},
-		"script.info_binary": {
-			"id": "script.sensor_binary",
-			"description": "Script to read a Binary Sensor", 
-			"name": "Script Info Binary",
-			"commands": [],
-			"sensors": ["sensor_script_info_binary"],
-			"parameters": [
-				{
-					"key": "interval",
-					"xpl": false,
-					"description": "Interval in seconds between executions (-1 to disabled script).",
-					"type": "integer",
-					"default": "60"
-				},
-				{
-					"key": "command",
-					"xpl": true,
-					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
-					"type": "string"
-				}
-			]
-		},
-		"script.info_string": {
-			"id": "script.sensor_string",
-			"description": "Script to read a string Sensor", 
-			"name": "Script Info String",
-			"commands": [],
-			"sensors": ["sensor_script_info_string"],
-			"parameters": [
-				{
-					"key": "interval",
-					"xpl": false,
-					"description": "Interval in seconds between executions (-1 to disabled script).",
-					"type": "integer",
-					"default": "60"
-				},
-				{
-					"key": "command",
-					"xpl": true,
-					"description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
-					"type": "string"
-				}
-			]
-		}
-	},
+    "device_types": {
+        "script.action": {
+            "id": "script.action",
+            "description": "Script to execute a Action", 
+            "name": "Script Action",
+            "commands": ["cmd_script_action"],
+            "sensors": ["sensor_script_action"],
+            "parameters": [
+                {
+                    "key": "command",
+                    "xpl": true,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_number": {
+            "id": "script.info_number",
+            "description": "Script to read a Number Sensor", 
+            "name": "Script Info Number",
+            "commands": [],
+            "sensors": ["sensor_script_info_number"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": true,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_binary": {
+            "id": "script.sensor_binary",
+            "description": "Script to read a Binary Sensor", 
+            "name": "Script Info Binary",
+            "commands": [],
+            "sensors": ["sensor_script_info_binary"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": true,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_string": {
+            "id": "script.sensor_string",
+            "description": "Script to read a string Sensor", 
+            "name": "Script Info String",
+            "commands": [],
+            "sensors": ["sensor_script_info_string"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": true,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        }
+    },
 
-	"commands": { 
-		"cmd_script_action" : {
-			"name" : "Script action",
-			"return_confirmation" : true,
-			"parameters" : [
-				{
-					"key" : "status",
-					"data_type" : "DT_Trigger",
-					"conversion" : "from_DT_Trigger_to_start"
-				}
-			],
-			"xpl_command" : "run_script_action"
-		}
-	},
+    "commands": { 
+        "cmd_script_action" : {
+            "name" : "Script action",
+            "return_confirmation" : true,
+            "parameters" : [
+                {
+                    "key" : "status",
+                    "data_type" : "DT_Trigger",
+                    "conversion" : "from_DT_Trigger_to_start"
+                }
+            ],
+            "xpl_command" : "run_script_action"
+        }
+    },
 
-	"xpl_commands": {
-		"run_script_action" : {
-			"name": "Run script action",
-			"schema": "exec.basic",
-			"xplstat_name": "stat_script_action",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_action"
-						}
-					],
-				"device": []
-			}
-		}		
-	}, 
+    "xpl_commands": {
+        "run_script_action" : {
+            "name": "Run script action",
+            "schema": "exec.basic",
+            "xplstat_name": "stat_script_action",
+            "parameters": {
+                "static": [
+                        {
+                            "key": "type",
+                            "value": "script_action"
+                        }
+                    ],
+                "device": []
+            }
+        }        
+    }, 
 
-	"xpl_stats": {
-		"stat_script_action": {
-			"name": "Stat script action",
-			"schema": "exec.basic",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_action"
-						}
-					],
-				"device": [],
-				"dynamic": [
-					{
-						 "key": "status",
-						 "ignore_values": "",
-						 "sensor": "sensor_script_action"
-					}
-				]
-			}
-		},
-		"stat_script_info_number": {
-			"name": "Stat script info number",
-			"schema": "exec.basic",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_info_number"
-						}
-					],
-				"device": [],
-				"dynamic": [
-					{
-						 "key": "status",
-						 "ignore_values": "",
-						 "sensor": "sensor_script_info_number"
-					}
-				]
-			}
-		},
-		"stat_script_info_binary": {
-			"name": "Stat script info binary",
-			"schema": "exec.basic",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_info_binary"
-						}
-					],
-				"device": [],
-				"dynamic": [
-					{
-						 "key": "status",
-						 "ignore_values": "",
-						 "sensor": "sensor_script_info_binary"
-					}
-				]
-			}
-		},
-		"stat_script_info_string": {
-			"name": "Stat script info string",
-			"schema": "exec.basic",
-			"parameters": {
-				"static": [
-						{
-							"key": "type",
-							"value": "script_info_string"
-						}
-					],
-				"device": [],
-				"dynamic": [
-					{
-						 "key": "status",
-						 "ignore_values": "",
-						 "sensor": "sensor_script_info_string"
-					}
-				]
-			}
-		}
-	},
+    "xpl_stats": {
+        "stat_script_action": {
+            "name": "Stat script action",
+            "schema": "exec.basic",
+            "parameters": {
+                "static": [
+                        {
+                            "key": "type",
+                            "value": "script_action"
+                        }
+                    ],
+                "device": [],
+                "dynamic": [
+                    {
+                         "key": "status",
+                         "ignore_values": "",
+                         "sensor": "sensor_script_action"
+                    }
+                ]
+            }
+        },
+        "stat_script_info_number": {
+            "name": "Stat script info number",
+            "schema": "exec.basic",
+            "parameters": {
+                "static": [
+                        {
+                            "key": "type",
+                            "value": "script_info_number"
+                        }
+                    ],
+                "device": [],
+                "dynamic": [
+                    {
+                         "key": "status",
+                         "ignore_values": "",
+                         "sensor": "sensor_script_info_number"
+                    }
+                ]
+            }
+        },
+        "stat_script_info_binary": {
+            "name": "Stat script info binary",
+            "schema": "exec.basic",
+            "parameters": {
+                "static": [
+                        {
+                            "key": "type",
+                            "value": "script_info_binary"
+                        }
+                    ],
+                "device": [],
+                "dynamic": [
+                    {
+                         "key": "status",
+                         "ignore_values": "",
+                         "sensor": "sensor_script_info_binary"
+                    }
+                ]
+            }
+        },
+        "stat_script_info_string": {
+            "name": "Stat script info string",
+            "schema": "exec.basic",
+            "parameters": {
+                "static": [
+                        {
+                            "key": "type",
+                            "value": "script_info_string"
+                        }
+                    ],
+                "device": [],
+                "dynamic": [
+                    {
+                         "key": "status",
+                         "ignore_values": "",
+                         "sensor": "sensor_script_info_string"
+                    }
+                ]
+            }
+        }
+    },
 
-	"sensors": {
-		"sensor_script_action": {
-			"name": "Script Action",
-			"incremental" : false,
-			"data_type": "DT_Trigger",
-			"conversion": "from_executed_to_DT_Trigger",
-			"timeout" : 0,
-			"history": {
-				"store": false,
-				"duplicate" : false,
-				"max": 0,
-				"expire": 0,
-				"round_value": 0
-			}
-		},
-		"sensor_script_info_number": {
-			"name": "Script Info Num",
-			"incremental" : false,
-			"data_type": "DT_Number",
-			"conversion": "",
-			"timeout" : 0,
-			"history": {
-				"store": true,
-				"duplicate" : false,
-				"max": 0,
-				"expire": 0,
-				"round_value": 0
-			}
-		},
-		"sensor_script_info_binary": {
-			"name": "Script Info Bin",
-			"incremental" : false,
-			"data_type": "DT_Bool",
-			"conversion": "",
-			"timeout" : 0,
-			"history": {
-				"store": true,
-				"duplicate" : false,
-				"max": 0,
-				"expire": 0,
-				"round_value": 0
-			}
-		},
-		"sensor_script_info_string": {
-			"name": "Script Info String",
-			"incremental" : false,
-			"data_type": "DT_String",
-			"conversion": "",
-			"timeout" : 0,
-			"history": {
-				"store": true,
-				"duplicate" : false,
-				"max": 0,
-				"expire": 0,
-				"round_value": 0
-			}
-		}
-	}
+    "sensors": {
+        "sensor_script_action": {
+            "name": "Script Action",
+            "incremental" : false,
+            "data_type": "DT_Trigger",
+            "conversion": "from_executed_to_DT_Trigger",
+            "timeout" : 0,
+            "history": {
+                "store": false,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_info_number": {
+            "name": "Script Info Num",
+            "incremental" : false,
+            "data_type": "DT_Number",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_info_binary": {
+            "name": "Script Info Bin",
+            "incremental" : false,
+            "data_type": "DT_Bool",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_info_string": {
+            "name": "Script Info String",
+            "incremental" : false,
+            "data_type": "DT_String",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        }
+    }
 }
