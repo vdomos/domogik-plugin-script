@@ -28,63 +28,92 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 
 import traceback
 import subprocess
+import shlex
 
 
 class ScriptException(Exception):
-	"""
-	Script exception
-	"""
+    """
+    Script exception
+    """
 
-	def __init__(self, value):
-		Exception.__init__(self)
-		self.sensorvalue = value
+    def __init__(self, value):
+        Exception.__init__(self)
+        self.sensorvalue = value
 
-	def __str__(self):
-		return repr(self.value)
-
+    def __str__(self):
+        return repr(self.value)
 
 
 class Script:
-	""" 
-	"""
+    """
+    """
 
-	def __init__(self, log):
-		""" 
-		"""
-		self.log = log
-		
-		
-	def run_cmd(self, cmd, type):
-		""" Execute shell command.
-		"""
-		self.log.info("### Execute subprocess '%s'" % cmd)
-		try:
-			outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False)
-		except subprocess.CalledProcessError, e:
-			self.log.error("### Command '%s' failed with error : %d, (%s)" % (cmd, e.returncode, e.output))
-			return "failed"
-		except OSError, e: 
-			self.log.error("### Command '%s' failed with OSerror : %d, (%s)" % (cmd, e.errno, e.strerror))
-			return "failed"
-
-		if  (type == "cmd_action"): 
-			return "executed"
-		else:
-			if not self.is_number(outputcmd):
-				self.log.error("### Sensor DT_Number Command '%s' not return a number: '%s'" % (cmd, outputcmd))
-				return "failed"
-			return outputcmd.rstrip()
-
-			
-	def is_number(self, s):
-		try:
-			float(s)
-			return True
-		except ValueError:
-			return False
-
-	
+    def __init__(self, log):
+        """
+        """
+        self.log = log
 
 
+    def runCmd(self, script, type):
+        """ Execute shell command.
+            script :      script (list)
+            type :        script type
+        """
+
+        if any(i in script for i in '<|>&'):
+            self.log.error(u"### Script '%s' is refused: specials characters like '>', '<', '|', '&' are not authorized" % script)
+            return "failed"
+
+        cmd = shlex.split(script.strip())            # For spliting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
+
+        self.log.info(u"==> Execute subprocess for '%s'" % cmd)
+        try:
+            outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
+        except subprocess.CalledProcessError, e:
+            self.log.error(u"### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
+            return "failed"
+        except OSError, e:
+            self.log.error(u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
+            if e.errno == 8:
+                self.log.error(u"### Script '%s': missing 'shebang' at top of the script or bad arch for binary program !" % script)
+
+            return "failed"
+
+        if (type == "script_action"):
+            return "executed"
+        elif (type == "script_info_number"):
+            if not self.is_number(outputcmd):
+                self.log.error(u"### Script type Number '%s' not return a number: '%s'" % (script, outputcmd))
+                return "failed"
+        elif (type == "script_info_binary"):
+            if outputcmd not in ['0', '1']:
+                self.log.error(u"### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd))
+                return "failed"
+
+        return outputcmd    # Return value for "script.info_number | script.info_binary | script.info_string"
 
 
+    def is_number(self, s):
+        ''' Return 'True' if s is a number
+        '''
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
+
+    def runScheduledCmd(self, log, devname, scripttype, script, interval, sendxpl, stop):
+        """ Execute script/program every interval secondes.
+            @param
+            devname :        Device name
+            scripttype :    Scritp type
+            script :         script (list)
+            interval :         Interval in seconde to execute script
+        """
+        while not stop.isSet():
+            log.info(u"==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+            resultcmd = self.runCmd(script, scripttype)
+            log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (script, resultcmd))         # xpl-trig exec.basic { pid='cmd_action|cmd_info' command='/path/program' arg='parameters ...' status='executed|value' }
+            sendxpl("xpl-trig", {"command": script, "type": scripttype, "status": resultcmd})
+            stop.wait(interval)

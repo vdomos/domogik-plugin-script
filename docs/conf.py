@@ -13,7 +13,7 @@ master_doc = 'index'
 ### part to update ###################################
 project = u'domogik-plugin-script'
 copyright = u'2015, Domos'
-version = '0.1'
+version = '1.0'
 release = version
 ######################################################
 

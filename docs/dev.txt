@@ -5,23 +5,14 @@ Development informations
 xPL messages
 ============
 
+
+
 xpl-cmnd
 --------
 
 The **exec.basic** message is used: ::
 
-    xpl-cmnd
-    {
-    ...
-    }
-    exec.basic 
-    { 
-		pid: 		Command type, must be set to "cmd_action|cmd_info"
-		program: 	Executable filename, including path and extension
-		arg:		Command line arguments or 'none'
-		status: 	'start' for running program (for "Script Action" or "Script Sensor" device)
-    }
-
+	exec.basic { type='cmd_action'  program='/path/program [parameters]'  status='start' }
 
 
 xpl-trig
@@ -31,89 +22,29 @@ The answer of the xpl-cmnd.
 
 The **exec.basic** message is used: ::
 
-    xpl-stat
-    {
-    ...
-    }
-    exec.basic 
-    { 
-		pid: 		Command type, must be set to "cmd_action|cmd_info"
-		program: 	Executable filename, including path and extension
-		arg:		Command line arguments or 'none'
-		status: 	"executed|value|failed"  "executed" for a "Script Action" device , value for a "Script Sensor" device, "failed" for all failed script.
-    }
-	 
+	exec.basic { type='script_info_number | script_info_binary | script_action'  program='/path/program [parameters]'  status='executed|value|failed' }
 	 
 
 
 Examples of xPL messages of the plugin
 --------------------------------------
 
-**Script Action** xpl-cmnd message with the xpl-trig **executed** awswer : ::
+The **script_action** xpl-cmnd message: ::
 
-	2015-11-07 00:44:59  
-	xpl-cmnd 
-	{ 
-		hop=1 
-		source=domogik-xplgw.ares 
-		target=domogik-script.ares 
-	} 
-	exec.basic 
-	{ 
-		arg='canape on' 
-		pid='cmd_action' 
-		program='/home/dan/bin/setLum.sh' 
-		status='start' 
-	}
-	
-	2015-11-07 00:45:01  
-	xpl-trig 
-	{ 
-		hop=1 
-		source=domogik-script.ares 
-		target=* 
-	} 
-	exec.basic 
-	{ 
-		pid='cmd_action' 
-		program='/home/dan/bin/setLum.sh' 
-		arg='canape on' 
-		status='executed' 
-	}
-		 
-	  
+	xpl-cmnd  exec.basic { program='/home/USER/bin/setchacon.sh salon on' type='script_action' status='start' }
 
-**Script Sensor** xpl-cmnd message with the xpl-trig **value** awswer: ::
+The **script_action** xpl-trig message: ::
 
-	2015-11-07 00:28:14  
-	xpl-cmnd 
-	{ 
-		hop=1 
-		source=domogik-xplgw.ares 
-		target=domogik-script.ares 
-	} 
-	exec.basic 
-	{ 
-		arg='-jour' 
-		pid='cmd_info' 
-		program='/home/dan/bin/getElec.sh ' 
-		status='start' 
-	}
+	xpl-trig  exec.basic { status='executed' program='/home/USER/bin/setchacon.sh salon on' type='script_action' }
+
 	
-	2015-11-07 00:28:16  
-	xpl-trig 
-	{ 
-		hop=1 
-		source=domogik-script.ares 
-		target=* 
-	} 
-	exec.basic 
-	{ 
-		pid='cmd_info' 
-		program='/home/dan/bin/getElec.sh ' 
-		arg='-jour' 
-		status='0.204' 
-	}
-	
-	 
+The **script_info_binary** xpl-trig message: ::
+
+	xpl-trig  exec.basic { status='1' program='/home/USER/bin/check_process.sh lcdmeteo.py' type='script_info_binary' }
+
+
+The **script_info_number** xpl-trig message: ::
+
+	xpl-trig  exec.basic { status='1999.8' program='/home/USER/bin/listdatawatermysql.sh -jour' type='script_info_number' }
+
 	  

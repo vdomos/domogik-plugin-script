@@ -20,3 +20,4 @@ http://domogik-plugin-script.readthedocs.org/en/master
 To install this package on your Domogik system, you can go in this GitHub repository releases page and get the link to a release .zip file. Then you just have to do :
 
     dmg_package -i https://github.com/vdomos/domogik-plugin-script/archive/master.zip
+
