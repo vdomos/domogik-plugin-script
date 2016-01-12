@@ -1,4 +1,4 @@
-{
+{ 
     "test_action" : {
         "alter_configuration_or_setup" : true,
         "need_hardware" : false,
