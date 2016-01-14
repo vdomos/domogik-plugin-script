@@ -4,11 +4,6 @@
         "need_hardware" : false,
         "criticity" : "high"
     },
-    "test_number" : {
-        "alter_configuration_or_setup" : true,
-        "need_hardware" : false,
-        "criticity" : "high"
-    },
     "test_binary" : {
         "alter_configuration_or_setup" : true,
         "need_hardware" : false,
