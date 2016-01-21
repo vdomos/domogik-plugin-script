@@ -5,3 +5,4 @@ _build_doc
 *.kate-swp
 *.[oa]
 *.20*
+*.directory
