@@ -4,7 +4,7 @@
     "identity": {
         "author": "vdomos", 
         "author_email": "domos pt vesta at gmail.com", 
-        "tags": ["script, shell, computer"], 
+        "tags": ["script, shell, computer"],  
         "dependencies": [],
         "description": "Domogik Plugin for scripts", 
         "domogik_min_version": "0.5.0", 

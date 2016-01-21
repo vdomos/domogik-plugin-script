@@ -85,7 +85,8 @@ if __name__ == "__main__":
         td.del_devices_by_client(client_id)
     except: 
         print(u"Error while deleting all the test device for the client id '{0}' : {1}".format(client_id, traceback.format_exc()))
-        sys.exit(1)
+        #sys.exit(1)
+        xpl_plugin.force_leave(return_code = 1)
 
     # create a test device
     try:
@@ -115,7 +116,8 @@ if __name__ == "__main__":
 
     except:
         print(u"Error while creating the test devices : {0}".format(traceback.format_exc()))
-        sys.exit(1)
+        #sys.exit(1)
+        xpl_plugin.force_leave(return_code = 1)
 
     
     ### prepare and run the test suite
