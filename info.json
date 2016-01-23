@@ -4,13 +4,13 @@
     "identity": {
         "author": "vdomos", 
         "author_email": "domos pt vesta at gmail.com", 
-        "tags": ["script, shell, computer"],  
+        "tags": ["script, shell, computer"], 
         "dependencies": [],
         "description": "Domogik Plugin for scripts", 
         "domogik_min_version": "0.5.0", 
         "name": "script", 
         "type": "plugin", 
-        "version": "1.0"
+        "version": "1.5"
     }, 
 
     "products" : [],
@@ -27,8 +27,29 @@
             "parameters": [
                 {
                     "key": "command",
-                    "xpl": true,
+                    "xpl": false,
                     "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.onoff": {
+            "id": "script.onoff",
+            "description": "Script to execute a OnOff action", 
+            "name": "Script OnOff",
+            "commands": ["cmd_script_onoff"],
+            "sensors": ["sensor_script_onoff"],
+            "parameters": [
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Command (script/program) to execute a 'On' action  (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "key": "command0",
+                    "xpl": false,
+                    "description": "Command (script/program) to execute a 'Off' action  (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
                     "type": "string"
                 }
             ]
@@ -49,7 +70,51 @@
                 },
                 {
                     "key": "command",
-                    "xpl": true,
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_temperature": {
+            "id": "script.info_temperature",
+            "description": "Script to read a Temperature Sensor", 
+            "name": "Script Info Temperature",
+            "commands": [],
+            "sensors": ["sensor_script_info_temperature"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_humidity": {
+            "id": "script.info_humidity",
+            "description": "Script to read a Humidity Sensor", 
+            "name": "Script Info Humidity",
+            "commands": [],
+            "sensors": ["sensor_script_info_humidity"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
                     "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
                     "type": "string"
                 }
@@ -71,7 +136,51 @@
                 },
                 {
                     "key": "command",
-                    "xpl": true,
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_switch": {
+            "id": "script.sensor_switch",
+            "description": "Script to read a Switch Sensor", 
+            "name": "Script Info Switch",
+            "commands": [],
+            "sensors": ["sensor_script_info_switch"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_openclose": {
+            "id": "script.sensor_openclose",
+            "description": "Script to read a Openclose Sensor", 
+            "name": "Script Info Openclose",
+            "commands": [],
+            "sensors": ["sensor_script_info_openclose"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
                     "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
                     "type": "string"
                 }
@@ -93,7 +202,7 @@
                 },
                 {
                     "key": "command",
-                    "xpl": true,
+                    "xpl": false,
                     "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
                     "type": "string"
                 }
@@ -103,116 +212,26 @@
 
     "commands": { 
         "cmd_script_action" : {
-            "name" : "Script action",
+            "name" : "Script Action",
             "return_confirmation" : true,
             "parameters" : [
                 {
-                    "key" : "status",
+                    "key" : "state",
                     "data_type" : "DT_Trigger",
-                    "conversion" : "from_DT_Trigger_to_start"
+                    "conversion" : ""
                 }
-            ],
-            "xpl_command" : "run_script_action"
-        }
-    },
-
-    "xpl_commands": {
-        "run_script_action" : {
-            "name": "Run script action",
-            "schema": "exec.basic",
-            "xplstat_name": "stat_script_action",
-            "parameters": {
-                "static": [
-                        {
-                            "key": "type",
-                            "value": "script_action"
-                        }
-                    ],
-                "device": []
-            }
-        }        
-    }, 
-
-    "xpl_stats": {
-        "stat_script_action": {
-            "name": "Stat script action",
-            "schema": "exec.basic",
-            "parameters": {
-                "static": [
-                        {
-                            "key": "type",
-                            "value": "script_action"
-                        }
-                    ],
-                "device": [],
-                "dynamic": [
-                    {
-                         "key": "status",
-                         "ignore_values": "",
-                         "sensor": "sensor_script_action"
-                    }
-                ]
-            }
+            ]
         },
-        "stat_script_info_number": {
-            "name": "Stat script info number",
-            "schema": "exec.basic",
-            "parameters": {
-                "static": [
-                        {
-                            "key": "type",
-                            "value": "script_info_number"
-                        }
-                    ],
-                "device": [],
-                "dynamic": [
-                    {
-                         "key": "status",
-                         "ignore_values": "",
-                         "sensor": "sensor_script_info_number"
-                    }
-                ]
-            }
-        },
-        "stat_script_info_binary": {
-            "name": "Stat script info binary",
-            "schema": "exec.basic",
-            "parameters": {
-                "static": [
-                        {
-                            "key": "type",
-                            "value": "script_info_binary"
-                        }
-                    ],
-                "device": [],
-                "dynamic": [
-                    {
-                         "key": "status",
-                         "ignore_values": "",
-                         "sensor": "sensor_script_info_binary"
-                    }
-                ]
-            }
-        },
-        "stat_script_info_string": {
-            "name": "Stat script info string",
-            "schema": "exec.basic",
-            "parameters": {
-                "static": [
-                        {
-                            "key": "type",
-                            "value": "script_info_string"
-                        }
-                    ],
-                "device": [],
-                "dynamic": [
-                    {
-                         "key": "status",
-                         "ignore_values": "",
-                         "sensor": "sensor_script_info_string"
-                    }
-                ]
-            }
+        "cmd_script_onoff" : {
+            "name" : "Script OnOff",
+            "return_confirmation" : true,
+            "parameters" : [
+                {
+                    "key" : "state",
+                    "data_type" : "DT_Switch",
+                    "conversion" : ""
+                }
+            ]
         }
     },
 
@@ -221,7 +240,7 @@
             "name": "Script Action",
             "incremental" : false,
             "data_type": "DT_Trigger",
-            "conversion": "from_executed_to_DT_Trigger",
+            "conversion": "",
             "timeout" : 0,
             "history": {
                 "store": false,
@@ -231,8 +250,22 @@
                 "round_value": 0
             }
         },
+        "sensor_script_onoff": {
+            "name": "Script OnOff",
+            "incremental" : false,
+            "data_type": "DT_Switch",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : true,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
         "sensor_script_info_number": {
-            "name": "Script Info Num",
+            "name": "Script Info Number",
             "incremental" : false,
             "data_type": "DT_Number",
             "conversion": "",
@@ -245,10 +278,66 @@
                 "round_value": 0
             }
         },
+        "sensor_script_info_temperature": {
+            "name": "Script Info Temp",
+            "incremental" : false,
+            "data_type": "DT_Temp",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_info_humidity": {
+            "name": "Script Info Humidity",
+            "incremental" : false,
+            "data_type": "DT_Humidity",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
         "sensor_script_info_binary": {
-            "name": "Script Info Bin",
+            "name": "Script Info Binary",
             "incremental" : false,
             "data_type": "DT_Bool",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_info_switch": {
+            "name": "Script Info Switch",
+            "incremental" : false,
+            "data_type": "DT_Switch",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_info_openclose": {
+            "name": "Script Info OpenClose",
+            "incremental" : false,
+            "data_type": "DT_OpenClose",
             "conversion": "",
             "timeout" : 0,
             "history": {
@@ -273,5 +362,8 @@
                 "round_value": 0
             }
         }
-    }
+    },
+    
+    "xpl_commands": {}, 
+    "xpl_stats": {}
 }
