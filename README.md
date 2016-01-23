@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The **Script** plugin (** No  xPL develop version**) is used to run Linux scripts/programs with Domogik
+The **Script** plugin (**No xPL develop version**) is used to run Linux scripts/programs with Domogik
 
 This is a package for Domogik : http://www.domogik.org
 
