@@ -21,7 +21,7 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 
 
 @author: domos  (domos p vesta at gmail p com)
-@copyright: (C) 2007-2012 Domogik project
+@copyright: (C) 2007-2016 Domogik project
 @license: GPL(v3)
 @organization: Domogik
 """
@@ -71,16 +71,9 @@ class Script:
         try:
             outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
         except subprocess.CalledProcessError, e:
-<<<<<<< HEAD
             errorstr = u"### Script '%s' failed with error : %d, %s" % (script, e.returncode, e.output.decode('ascii', errors='ignore'))
             self.log.error(errorstr)
             return False, errorstr
-=======
-            self.log.error(u"### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output.decode('ascii', errors='ignore')))
-            #     self.log.error(u"### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output))
-            # UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 59: ordinal not in range(128)
-            return "failed"
->>>>>>> 4ff29b1581af123394e0cfc509ae3f36559de36e
         except OSError, e:
             errorstr = u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror)
             self.log.error(errorstr)
