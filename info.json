@@ -269,7 +269,7 @@
             "incremental" : false,
             "data_type": "DT_Number",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
@@ -283,7 +283,7 @@
             "incremental" : false,
             "data_type": "DT_Temp",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
@@ -297,7 +297,7 @@
             "incremental" : false,
             "data_type": "DT_Humidity",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
@@ -311,7 +311,7 @@
             "incremental" : false,
             "data_type": "DT_Bool",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
@@ -325,7 +325,7 @@
             "incremental" : false,
             "data_type": "DT_Switch",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
@@ -339,7 +339,7 @@
             "incremental" : false,
             "data_type": "DT_OpenClose",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
@@ -353,7 +353,7 @@
             "incremental" : false,
             "data_type": "DT_String",
             "conversion": "",
-            "timeout" : 0,
+            "timeout" : 600,
             "history": {
                 "store": true,
                 "duplicate" : false,
