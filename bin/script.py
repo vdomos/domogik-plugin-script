@@ -167,7 +167,7 @@ class ScriptManager(Plugin):
             self.log.info("==> Update Sensor '%s' / id '%s' with value '%s' for device '%s'" % (sensor, self.sensors[device_id][sensor], value, self.device_list[device_id]["name"]))
             # INFO ==> Update Sensor 'Script OnOff' / id '159' with value '1' for device 'Lum Sejour'
             data[self.sensors[device_id][sensor]] = value
-        self.log.info("==> 0MQ PUB sended = %s" % format(data))			# {u'id_sensor': u'value'} => {159: u'1'}
+        self.log.info("==> 0MQ PUB for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
 
         try:
             self._pub.send_event('client.sensor', data)
