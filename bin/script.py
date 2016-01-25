@@ -138,7 +138,7 @@ class ScriptManager(Plugin):
                 device_command = self.device_list[data["device_id"]]["commands"][int(data["state"])]
                 device_name = self.device_list[data["device_id"]]["name"]
                 device_type = self.device_list[data["device_id"]]["scripttype"]
-                self.log.info(u"==> Execute requested comand '%s' (%s) for device '%s'" % (device_command, device_type, device_name))
+                self.log.info(u"==> Execute requested command '%s' (%s) for device '%s'" % (device_command, device_type, device_name))
                 # call command
                 status, reason = self.script.runCmd(device_command, device_type)       # True, None  | False, "Error str"
 
