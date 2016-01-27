@@ -106,7 +106,7 @@ class ScriptManager(Plugin):
                     self.log.info(u"==> Wait some time before running the next scheduled script ...")
                     time.sleep(5)        # Wait some time to not start the script with the same interval et the same time.
                 else:
-                    self.log.info(u"==> Script thread '%s' for '%s' device is DISABLED (interval < 0) !" % (thr_name, device_name))
+                    self.log.warning(u"==> Script thread for '%s' device is DISABLED (interval < 0) !" % device_name)
 
             else:
                 if device_type == "script.onoff": 
