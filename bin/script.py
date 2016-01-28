@@ -97,7 +97,7 @@ class ScriptManager(Plugin):
                                                             device_type,
                                                             device_command1,
                                                             command_interval,
-                                                            self.send_data,
+                                                            self.send_pub_data,
                                                             self.get_stop()
                                                         ),
                                                     {})
@@ -123,11 +123,11 @@ class ScriptManager(Plugin):
         """ Called when a MQ req/rep message is received
         """
         Plugin.on_mdp_request(self, msg)
-        # self.log.info(u"==> Received 0MQ messages: %s" % format(msg))
+        # self.log.info(u"==> Received MQ message: %s" % format(msg))
         if msg.get_action() == "client.cmd":
             data = msg.get_data()
-            self.log.info(u"==> Received 0MQ messages data: %s" % format(data))
-            # INFO ==> Received 0MQ messages data: {u'state': u'1', u'command_id': 50, u'device_id': 139}
+            self.log.info(u"==> Received MQ REQ command message: %s" % format(data))
+            # INFO ==> Received MQ REQ command message: {u'state': u'1', u'command_id': 50, u'device_id': 139}
             
             if data["device_id"] not in self.device_list:
                 self.log.error("### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % data["device_id"])
@@ -144,37 +144,43 @@ class ScriptManager(Plugin):
 
                 # Update sensor's command state
                 if status:
-                    self.send_data(data["device_id"], data["state"])
+                    self.send_pub_data(data["device_id"], data["state"])
                     
-            # Send MQ ACK to command
-            self.log.info("Reply ACQ to command 0MQ")
-            reply_msg = MQMessage()
-            reply_msg.set_action('client.cmd.result')
-            reply_msg.add_data('status', status)
-            reply_msg.add_data('reason', reason)
-            self.reply(reply_msg.get())
+            # Send MQ REP (ACK) to command
+            self.send_rep_ack(status, reason, data["command_id"]) ;
 
 
-    def send_data(self, device_id, value):
+    def send_rep_ack(self, status, reason, cmd_id):
+        """ Send MQ REP (acq) to command
+        """
+        self.log.info(u"==> Reply MQ REP (acq) to REQ command id '%s'" % cmd_id)
+        reply_msg = MQMessage()
+        reply_msg.set_action('client.cmd.result')
+        reply_msg.add_data('status', status)
+        reply_msg.add_data('reason', reason)
+        self.reply(reply_msg.get())
+
+
+    def send_pub_data(self, device_id, value):
         """ Send the value sensors values over MQ
         """
         data = {}
-        if device_id not in self.device_list:
-            self.log.error("### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % (device_id))
-            return (False, "Plugin script: Unknown sensor device ID %d" % device_id)
+        #if device_id not in self.device_list:
+        #    self.log.error("### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % (device_id))
+        #    return (False, "Plugin script: Unknown sensor device ID %d" % device_id)
             
         for sensor in self.sensors[device_id]:          # {66: {u'Script OnOff': 159}}
             self.log.info("==> Update Sensor '%s' / id '%s' with value '%s' for device '%s'" % (sensor, self.sensors[device_id][sensor], value, self.device_list[device_id]["name"]))
             # INFO ==> Update Sensor 'Script OnOff' / id '159' with value '1' for device 'Lum Sejour'
             data[self.sensors[device_id][sensor]] = value
-        self.log.info("==> 0MQ PUB for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
 
         try:
             self._pub.send_event('client.sensor', data)
+            self.log.info("==> MQ PUB message for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
         except:
             # We ignore the message if some values are not correct ...
-            self.log.debug(u"Bad MQ message to send. This may happen due to some invalid sensor data. MQ data is : {0}".format(data))
-            return (False, "Plugin script: Bad MQ message to update sensor")
+            self.log.debug(u"Bad MQ PUB message to send. This may happen due to some invalid sensor data. MQ data is : {0}".format(data))
+            return (False, "Plugin script: Bad MQ PUB message to update sensor")
 
         return (True, None)
 
