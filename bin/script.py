@@ -77,11 +77,11 @@ class ScriptManager(Plugin):
 
             device_id = a_device["id"]
             device_name = a_device["name"]                              # Ex.: "Conso Elec Jour" 
-            device_type = a_device["device_type_id"]                  # Ex.: "script.info_number | script.info_binary | script.info_string | script.action|..."            
+            device_type = a_device["device_type_id"]                    # Ex.: "script.info_number | script.info_binary | script.info_string | script.action|..."            
             device_command1 = self.get_parameter(a_device, "command")         
             self.device_list.update({device_id : { 'commands': ["", device_command1], 'name': device_name, 'scripttype': device_type }})
 
-            if device_type != "script.action" and device_type != "script.onoff":          # Shedule only script_info_* scripts    
+            if "info" in device_type:                                                       # Shedule only script_info_* scripts    
                 command_interval = self.get_parameter(a_device, "interval")                 # Ex.: "60" in secondes
                 self.log.info(u"==> Device sensor '{0}' ({1}) for running '{2}' with interval {3}s".format(device_name, device_type, device_command1, command_interval))
                 if command_interval > 0:
@@ -126,34 +126,72 @@ class ScriptManager(Plugin):
         # self.log.info(u"==> Received MQ message: %s" % format(msg))
         if msg.get_action() == "client.cmd":
             data = msg.get_data()
-            self.log.info(u"==> Received MQ REQ command message: %s" % format(data))
+            self.log.debug(u"==> Received MQ REQ command message: %s" % format(data))
             # INFO ==> Received MQ REQ command message: {u'state': u'1', u'command_id': 50, u'device_id': 139}
+            # INFO ==> Received MQ REQ command message: {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
             
-            if data["device_id"] not in self.device_list:
-                self.log.error("### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % data["device_id"])
+            device_id = data["device_id"]
+            command_id = data["command_id"]
+            if device_id not in self.device_list:
+                self.log.error(u"### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % device_id)
                 status = False
-                reason = "Plugin script: Unknown device ID %d" % data["device_id"]
+                reason = u"Plugin script: Unknown device ID %d" % device_id
+                self.send_rep_ack(status, reason, command_id, "unknown") ;                      # Reply MQ REP (acq) to REQ command
+                return
             else:    
-                # Execute command
-                device_command = self.device_list[data["device_id"]]["commands"][int(data["state"])]
-                device_name = self.device_list[data["device_id"]]["name"]
-                device_type = self.device_list[data["device_id"]]["scripttype"]
-                self.log.info(u"==> Execute requested command '%s' (%s) for device '%s'" % (device_command, device_type, device_name))
-                # call command
-                status, reason = self.script.runCmd(device_command, device_type)       # True, None  | False, "Error str"
-
-                # Update sensor's command state
-                if status:
-                    self.send_pub_data(data["device_id"], data["state"])
+                device_name = self.device_list[device_id]["name"]
+                device_type = self.device_list[device_id]["scripttype"]
+                
+                # Three command Script: "script.action", "script.onoff" and "script.string"
+                if device_type == "script.action" or device_type == "script.onoff":
+                    device_state = data["state"]
+                    device_command = self.device_list[device_id]["commands"][int(device_state)]
                     
-            # Send MQ REP (ACK) to command
-            self.send_rep_ack(status, reason, data["command_id"]) ;
+                elif device_type == "script.string":
+                    # Script string:  data = {u'parameter1': u'World', u'command_id': 71, u'device_id': 171}  or  {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
+                    device_state = "1"      # Return a DT_Trigger sensor
+                    device_command = self.device_list[device_id]["commands"][int(device_state)]
+                    
+                    if "parameter1" not in data:
+                        self.log.error(u"### Missing 'parameter1' in command '%s' for device '%s' (type %s)" % (device_command, device_name, device_type))
+                        status = False
+                        reason = u"Plugin script: Missing 'parameter1' in command '%s' for device '%s' (type %s)" % (device_command, device_name, device_type)
+                        self.send_rep_ack(status, reason, command_id, device_name) ;            # Reply MQ REP (acq) to REQ command
+                        return
+                    if "parameter2" not in data:
+                        device_command = device_command + " " + data["parameter1"]
+                    else:
+                        device_command = device_command + " " + data["parameter1"] + " " + data["parameter2"]
+
+                # Execute command
+                # Call command in a thread ("on_mdp_request" function is not call in a thread for now and if script is too long, this can do a time-out)
+                thr_name = "dev_{0}-{1}".format(device_id, device_type)
+                self.log.debug(u"==> Launch command thread '%s' for '%s' device !" % (thr_name, device_name))
+                threads = {}
+                threads[thr_name] = threading.Thread(None,
+                                                    self.script.runRequestedCmd,
+                                                    thr_name,
+                                                    (self.log,
+                                                        device_id,
+                                                        device_name,
+                                                        device_type,
+                                                        device_command,
+                                                        device_state,
+                                                        self.send_pub_data,
+                                                        self.get_stop()
+                                                    ),
+                                                    {})
+                threads[thr_name].start()
+                self.register_thread(threads[thr_name])
+                
+            # Reply MQ REP (acq) to REQ command
+            self.send_rep_ack(True, None, command_id, device_name) ;                 # With thread, no possible to return a error script to MQ !
 
 
-    def send_rep_ack(self, status, reason, cmd_id):
+    def send_rep_ack(self, status, reason, cmd_id, dev_name):
         """ Send MQ REP (acq) to command
         """
-        self.log.info(u"==> Reply MQ REP (acq) to REQ command id '%s'" % cmd_id)
+        self.log.info(u"==> Reply MQ REP (acq) to REQ command id '%s' for device '%s'" % (cmd_id, dev_name))
         reply_msg = MQMessage()
         reply_msg.set_action('client.cmd.result')
         reply_msg.add_data('status', status)
@@ -179,10 +217,7 @@ class ScriptManager(Plugin):
             self.log.info("==> MQ PUB message for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
         except:
             # We ignore the message if some values are not correct ...
-            self.log.debug(u"Bad MQ PUB message to send. This may happen due to some invalid sensor data. MQ data is : {0}".format(data))
-            return (False, "Plugin script: Bad MQ PUB message to update sensor")
-
-        return (True, None)
+            self.log.error(u"Bad MQ PUB message to send. This may happen due to some invalid sensor data. MQ data is : {0}".format(data))
 
 
 if __name__ == "__main__":

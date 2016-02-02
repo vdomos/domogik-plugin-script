@@ -59,6 +59,56 @@ In this case, please notice that you will have to create another device to set t
 
 
     
+Domogik device type : **Script OnOff**
+---------------------------------------
+
+This is a **command** device that will execute a script or command line. The usage is to execute a switch.
+
+This is a On/Off command.
+
+You need to configure this parameters :
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+command               string                      The command line to run when the command is On.
+--------------------- --------------------------- ----------------------------------------------------------------------
+command0              string                      The command line to run when the command is Off.
+===================== =========================== ======================================================================
+
+One device is needed to set lights of the living room with this 2 commands in parameters: ::
+
+    $ ~/bin/setLum.sh salon on
+    $ ~/bin/setLum.sh salon off
+
+
+    
+Domogik device type : **Script String**
+---------------------------------------
+
+This is a **command** device that will execute a script or command line. The usage is to run something.
+
+This is a trigger command with one or two string parameter and the command line to run will always be the same.
+
+You need to configure this parameter :
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
+
+
+Example command line that can be run with 2 string parameters: ::
+
+    $ ~/bin/sendmail.sh "title" "message"
+    
+In this case, one parameter is use ::
+
+    $ ~/bin/display.sh "message" 
+
+
+    
 Domogik device type : **Script Info Binary**
 --------------------------------------------
 
@@ -83,6 +133,33 @@ command               string                      The command line to run when t
 Example script that can be run (to get the status of a process for example): ::
 
     $ ~/bin/check_process.sh lcdmeteo.py
+    1
+
+
+Domogik device type : **Script Info OpenClose**
+-----------------------------------------------
+
+This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
+
+The value is a **OpenClose** type. The value displayed by the script or command line can be ``0`` or ``1``.
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+interval              number                      The time in seconds between two executions of the command line
+--------------------- --------------------------- ----------------------------------------------------------------------
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
+
+    
+.. warning::    
+    The shell script of a **Script Info Binary device** should only return **'0'|'1'** with or without a ending '\\n' 
+    otherwise you will get an error.
+
+    
+Example script that can be run (to get the status of a process for example): ::
+
+    $ ~/bin/check_windows.sh kitchen
     1
 
 
@@ -113,6 +190,33 @@ Example script that can be run (to get the power consumption of the day for exam
     0.270
 
 
+Domogik device type : **Script Info Temperature**
+-------------------------------------------------
+
+This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
+
+The value is a **Temperature** type. The value displayed by the script or command line can be for example : ``3``, ``43.2``, ...
+
+===================== =========================== ======================================================================
+Key                   Type                        Description
+===================== =========================== ======================================================================
+interval              number                      The time in seconds between two executions of the command line
+--------------------- --------------------------- ----------------------------------------------------------------------
+command               string                      The command line to run when the command is triggered.
+===================== =========================== ======================================================================
+
+
+.. warning::    
+    The shell script of a **Script Info Number device** should only return a **number** with or without a ending '\\n' 
+    otherwise you will get an error.
+
+    
+Example script that can be run (to get the power consumption of the day for example): ::
+
+    $ ~/bin/getTempRPI
+    39.5
+
+
 Domogik device type : **Script Info String**
 --------------------------------------------
 
@@ -138,7 +242,7 @@ Example script that can be run (to get Weather warning for a location for exampl
 Additionnal informations about the devices creation
 ---------------------------------------------------
 
-If you have some issues with a script, please check the plugin logs in **/var/log/domogik/xplplugin_script.log** (for a default Domogik configuration).
+If you have some issues with a script, please check the plugin logs in **/var/log/domogik/plugin_script.log** (for a default Domogik configuration).
 
 .. note::
     You can disable a script by setting the interval to **'-1'**.

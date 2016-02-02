@@ -67,7 +67,7 @@ class Script:
 
         cmd = shlex.split(script.strip())            # For spliting with spaces and quote(s) for a command like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
 
-        self.log.info(u"==> Execute subprocess for '%s'" % cmd)
+        self.log.debug(u"==> Execute subprocess for '%s'" % cmd)
         try:
             outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
         except subprocess.CalledProcessError, e:
@@ -110,17 +110,32 @@ class Script:
         """ Execute script/program every interval secondes.
             @param
             devid :        Device id
-            devname :        Device name
-            scripttype :    Scritp type
-            script :         script (list)
-            interval :         Interval in seconde to execute script
+            devname :      Device name
+            scripttype :   Scritp type
+            script :       Script
+            interval :     Interval in seconde to execute script
         """
         while not stop.isSet():
-            log.info(u"==> Execute scheduled command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+            log.debug(u"==> Execute scheduled command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
             rc, val = self.runCmd(script, scripttype)
             if rc:
                 send(devid, val)
             stop.wait(interval)
+            
+            
+    def runRequestedCmd(self, log, devid, devname, scripttype, script, state, send, stop):
+        """ Execute script/program every interval secondes.
+            @param
+            devid :        Device id
+            devname :      Device name
+            scripttype :   Scritp type
+            script :       script
+            state :        Return state for command sensor
+        """
+        log.debug(u"==> Execute requested command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+        rc, val = self.runCmd(script, scripttype)
+        if rc:
+            send(devid, state)
             
             
             

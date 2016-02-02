@@ -10,7 +10,7 @@
         "domogik_min_version": "0.5.0", 
         "name": "script", 
         "type": "plugin", 
-        "version": "1.5"
+        "version": "2.0"
     }, 
 
     "products" : [],
@@ -24,6 +24,21 @@
             "name": "Script Action",
             "commands": ["cmd_script_action"],
             "sensors": ["sensor_script_action"],
+            "parameters": [
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.string": {
+            "id": "script.string",
+            "description": "Script to execute a Action with a string parameter", 
+            "name": "Script String",
+            "commands": ["cmd_script_string"],
+            "sensors": ["sensor_script_string"],
             "parameters": [
                 {
                     "key": "command",
@@ -142,12 +157,12 @@
                 }
             ]
         },
-        "script.info_switch": {
-            "id": "script.sensor_switch",
+        "script.info_onoff": {
+            "id": "script.sensor_onoff",
             "description": "Script to read a Switch Sensor", 
-            "name": "Script Info Switch",
+            "name": "Script Info OnOff",
             "commands": [],
-            "sensors": ["sensor_script_info_switch"],
+            "sensors": ["sensor_script_info_onoff"],
             "parameters": [
                 {
                     "key": "interval",
@@ -222,6 +237,22 @@
                 }
             ]
         },
+        "cmd_script_string" : {
+            "name" : "Script String",
+            "return_confirmation" : true,
+            "parameters" : [
+                {
+                    "key" : "parameter2",
+                    "data_type" : "DT_String",
+                    "conversion" : ""
+                },
+                {
+                    "key" : "parameter1",
+                    "data_type" : "DT_String",
+                    "conversion" : ""
+                }
+            ]
+        },
         "cmd_script_onoff" : {
             "name" : "Script OnOff",
             "return_confirmation" : true,
@@ -244,7 +275,21 @@
             "timeout" : 0,
             "history": {
                 "store": false,
-                "duplicate" : false,
+                "duplicate" : true,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "sensor_script_string": {
+            "name": "Script String",
+            "incremental" : false,
+            "data_type": "DT_Trigger",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": false,
+                "duplicate" : true,
                 "max": 0,
                 "expire": 0,
                 "round_value": 0
@@ -320,8 +365,8 @@
                 "round_value": 0
             }
         },
-        "sensor_script_info_switch": {
-            "name": "Script Info Switch",
+        "sensor_script_info_onoff": {
+            "name": "Script Info OnOff",
             "incremental" : false,
             "data_type": "DT_Switch",
             "conversion": "",
