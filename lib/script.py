@@ -82,12 +82,12 @@ class Script:
                 self.log.error(errorstr)
             return False, errorstr
 
-        if (type == "script.info_number"):
+        if type in ["script.info_number", "script.info_temperature", "script.info_humidity"]:
             if not self.is_number(outputcmd):
                 errorstr = u"### Script type Number '%s' not return a number: '%s'" % (script, outputcmd)
                 self.log.error(errorstr)
                 return False, errorstr
-        elif (type == "script.info_binary"):
+        elif type in ["script.info_binary", "script.info_onoff", "script.info_openclose"]:
             if outputcmd not in ['0', '1']:
                 errorstr = u"### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd)
                 self.log.error(errorstr)
