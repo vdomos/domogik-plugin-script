@@ -21,7 +21,7 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 
 
 @author: domos  (domos p vesta at gmail p com)
-@copyright: (C) 2007-2012 Domogik project
+@copyright: (C) 2007-2016 Domogik project
 @license: GPL(v3)
 @organization: Domogik
 """
@@ -61,36 +61,39 @@ class Script:
         """
 
         if any(i in script for i in '<|>&'):
-            self.log.error(u"### Script '%s' is refused: specials characters like '>', '<', '|', '&' are not authorized" % script)
-            return "failed"
+            errorstr = u"### Script '%s' is refused: specials characters like '>', '<', '|', '&' are not authorized" % script
+            self.log.error(errorstr)
+            return False, errorstr
 
-        cmd = shlex.split(script.strip())            # For spliting with spaces and quote(s) like a script like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
+        cmd = shlex.split(script.strip())            # For spliting with spaces and quote(s) for a command like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
 
-        self.log.info(u"==> Execute subprocess for '%s'" % cmd)
+        self.log.debug(u"==> Execute subprocess for '%s'" % cmd)
         try:
             outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
         except subprocess.CalledProcessError, e:
-            self.log.error(u"### Script '%s' failed with error : %d, (%s)" % (script, e.returncode, e.output.decode('ascii', errors='ignore')))
-            return "failed"
+            errorstr = u"### Script '%s' failed with error : %d, %s" % (script, e.returncode, e.output.decode('ascii', errors='ignore'))
+            self.log.error(errorstr)
+            return False, errorstr
         except OSError, e:
-            self.log.error(u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror))
+            errorstr = u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror)
+            self.log.error(errorstr)
             if e.errno == 8:
-                self.log.error(u"### Script '%s': missing 'shebang' at top of the script or bad arch for binary program !" % script)
+                errorstr = u"### Script '%s': missing 'shebang' at top of the script or bad arch for binary program !" % script
+                self.log.error(errorstr)
+            return False, errorstr
 
-            return "failed"
-
-        if (type == "script_action"):
-            return "executed"
-        elif (type == "script_info_number"):
+        if type in ["script.info_number", "script.info_temperature", "script.info_humidity"]:
             if not self.is_number(outputcmd):
-                self.log.error(u"### Script type Number '%s' not return a number: '%s'" % (script, outputcmd))
-                return "failed"
-        elif (type == "script_info_binary"):
+                errorstr = u"### Script type Number '%s' not return a number: '%s'" % (script, outputcmd)
+                self.log.error(errorstr)
+                return False, errorstr
+        elif type in ["script.info_binary", "script.info_onoff", "script.info_openclose"]:
             if outputcmd not in ['0', '1']:
-                self.log.error(u"### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd))
-                return "failed"
+                errorstr = u"### Script type Binary '%s' not return a binary: '%s'" % (script, outputcmd)
+                self.log.error(errorstr)
+                return False, errorstr
 
-        return outputcmd    # Return value for "script.info_number | script.info_binary | script.info_string"
+        return True, outputcmd    # Return value for "script.info_number | script.info_binary | script.info_string"
 
 
     def is_number(self, s):
@@ -103,17 +106,37 @@ class Script:
             return False
 
 
-    def runScheduledCmd(self, log, devname, scripttype, script, interval, sendxpl, stop):
+    def runScheduledCmd(self, log, devid, devname, scripttype, script, interval, send, stop):
         """ Execute script/program every interval secondes.
             @param
-            devname :        Device name
-            scripttype :    Scritp type
-            script :         script (list)
-            interval :         Interval in seconde to execute script
+            devid :        Device id
+            devname :      Device name
+            scripttype :   Scritp type
+            script :       Script
+            interval :     Interval in seconde to execute script
         """
         while not stop.isSet():
-            log.info(u"==> Execute scheduled script '%s' for device '%s' (type %s)" % (script, devname, scripttype))
-            resultcmd = self.runCmd(script, scripttype)
-            log.debug(u"==> Send xpl-trig msg for script '%s' with return '%s'" % (script, resultcmd))         # xpl-trig exec.basic { pid='cmd_action|cmd_info' command='/path/program' arg='parameters ...' status='executed|value' }
-            sendxpl(u"xpl-trig", {"command": script, "type": scripttype, "status": resultcmd})
+            log.debug(u"==> Execute scheduled command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+            rc, val = self.runCmd(script, scripttype)
+            if rc:
+                send(devid, val)
             stop.wait(interval)
+            
+            
+    def runRequestedCmd(self, log, devid, devname, scripttype, script, state, send, stop):
+        """ Execute script/program every interval secondes.
+            @param
+            devid :        Device id
+            devname :      Device name
+            scripttype :   Scritp type
+            script :       script
+            state :        Return state for command sensor
+        """
+        log.debug(u"==> Execute requested command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+        rc, val = self.runCmd(script, scripttype)
+        if rc:
+            send(devid, state)
+            
+            
+            
+            

@@ -2,6 +2,14 @@
 Changelog
 =========
 
+2.0
+===
+
+* No xPl Version
+* Add more Datatype sensors (Script Info Temperature, Script Info Humidity, Script Info OpenClose, Script Info OnOff, ScriptOnOff, Script String)
+* Display error log in Advanced page
+  
+
 1.0
 ===
 
