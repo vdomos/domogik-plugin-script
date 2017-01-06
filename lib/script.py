@@ -60,12 +60,14 @@ class Script:
             type :        script type
         """
 
-        if any(i in script for i in '<|>&'):
-            errorstr = u"### Script '%s' is refused: specials characters like '>', '<', '|', '&' are not authorized" % script
+        if any(i in script for i in '<|>'):
+            errorstr = u"### Script '%s' is refused: specials characters like '>', '<', '|' are not authorized" % script
             self.log.error(errorstr)
             return False, errorstr
 
-        cmd = shlex.split(script.strip())            # For spliting with spaces and quote(s) for a command like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
+        script = script.strip()
+        if script[-1] == '&':  script = script[:-1]     # Delete '&' for disable backgrounding command
+        cmd = shlex.split(script)    # For spliting with spaces and quote(s) for a command like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
 
         self.log.debug(u"==> Execute subprocess for '%s'" % cmd)
         try:
