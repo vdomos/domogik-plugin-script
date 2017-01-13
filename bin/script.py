@@ -159,9 +159,9 @@ class ScriptManager(Plugin):
                         self.send_rep_ack(status, reason, command_id, device_name) ;            # Reply MQ REP (acq) to REQ command
                         return
                     if "parameter2" not in data:
-                        device_command = device_command + " " + data["parameter1"]
+                        device_command = device_command + " '" + data["parameter1"] + "'"
                     else:
-                        device_command = device_command + " " + data["parameter1"] + " " + data["parameter2"]
+                        device_command = device_command + " '" + data["parameter1"] + "' '" + data["parameter2"] + "'"
 
                 # Execute command
                 # Call command in a thread ("on_mdp_request" function is not call in a thread for now and if script is too long, this can do a time-out)
