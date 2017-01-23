@@ -68,7 +68,7 @@ class ScriptManager(Plugin):
         self.sensors = {}
         self.device_list = {}
         
-        # Set scripts devices list
+        # Set vdevices list
         self.initDeviceList(self.devices)
 
         self.log.info(u"==> Add callback for new or changed devices.")
@@ -105,7 +105,7 @@ class ScriptManager(Plugin):
             else:
                 if device_type == "script.onoff": 
                     self.device_list[device_id]['commands'][0] = self.get_parameter(a_device, "command0")
-                    # {'100': {'commands': ['setlight off', 'setlight on'], 'name': 'Lumiere sejour'}}
+                    # {'100': {'commands': ['set lum off', 'set lum on'], 'name': 'Lum sejour'}}
                     self.log.info(u"==> Device command '{0}' ({1}) for running '{2}' if ON, for running '{3}' if OFF.".format(device_name, device_type, self.device_list[device_id]['commands'][1], self.device_list[device_id]['commands'][0]))
                 else:
                     self.log.info(u"==> Device command '{0}' ({1}) for running '{2}' if TRIG".format(device_name, device_type, self.device_list[device_id]['commands'][1]))
@@ -130,12 +130,14 @@ class ScriptManager(Plugin):
         # self.log.info(u"==> Received MQ message: %s" % format(msg))
         if msg.get_action() == "client.cmd":
             data = msg.get_data()
-            #self.log.debug(u"==> Received MQ REQ command message: %s" % format(data))      # INFO ==> Received MQ REQ command message: {u'state': u'1', u'command_id': 50, u'device_id': 139}
-                                                                                            # INFO ==> Received MQ REQ command message: {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
+            self.log.debug(u"==> Received MQ REQ command message: %s" % format(data))
+            # INFO ==> Received MQ REQ command message: {u'state': u'1', u'command_id': 50, u'device_id': 139}
+            # INFO ==> Received MQ REQ command message: {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
+            
             device_id = data["device_id"]
             command_id = data["command_id"]
             if device_id not in self.device_list:
-                self.log.error(u"### Device ID '%s' unknown" % device_id)
+                self.log.error(u"### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % device_id)
                 status = False
                 reason = u"Plugin script: Unknown device ID %d" % device_id
                 self.send_rep_ack(status, reason, command_id, "unknown") ;                      # Reply MQ REP (acq) to REQ command
@@ -217,23 +219,27 @@ class ScriptManager(Plugin):
 
         try:
             self._pub.send_event('client.sensor', data)
-            #self.log.info("==> MQ PUB message for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
+            self.log.info("==> MQ PUB message for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
         except:
             # We ignore the message if some values are not correct ...
-            self.log.error(u"Bad MQ PUB message to send : {0}".format(data))
+            self.log.error(u"Bad MQ PUB message to send. This may happen due to some invalid sensor data. MQ data is : {0}".format(data))
 
 
     # -------------------------------------------------------------------------------------------------
     def myHandleDeviceUpdate(self, devices):            # A methode to handle updated devices by callback
         self.log.info(u"==> DeviceUpdate called")
         #self.log.info(u"==> DeviceUpdate:   %s" % format(devices))
-
+        '''
+        for device in devices:
+            if 'interval' in device['parameters']:
+                self.log.info(u" id %s:  '%s'  '%s'  %s" % (device['id'], device['name'], device['parameters']['command']['value'], device['parameters']['interval']['value']))
+        '''
         if self.inDevicesUpdate: 
             self.log.info(u"==> DeviceUpdate already in progress")
             return
         self.inDevicesUpdate = True
         for device in devices:
-            self.log.info(u" id %s:  '%s'" % (device['id'], device['name']))        # if 'interval' in device['parameters']: self.log.info(u" id %s:  '%s'  '%s'  %s" % (device['id'], device['name'], device['parameters']['command']['value'], device['parameters']['interval']['value']))
+            self.log.info(u" id %s:  '%s'" % (device['id'], device['name']))
             
         self.log.info(u"==> Stopping 'Info Script' sensors thread")
         self.stopForUpdate.set()

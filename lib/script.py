@@ -29,6 +29,7 @@ along with Domogik. If not, see U{http://www.gnu.org/licenses}.
 import traceback
 import subprocess
 import shlex
+import time
 
 
 class ScriptException(Exception):
@@ -48,12 +49,15 @@ class Script:
     """
     """
 
+    # -------------------------------------------------------------------------------------------------
     def __init__(self, log):
         """
         """
         self.log = log
+        self._scheduledScripts = []
 
 
+    # -------------------------------------------------------------------------------------------------
     def runCmd(self, script, type):
         """ Execute shell command.
             script :      script (list)
@@ -69,7 +73,7 @@ class Script:
         if script[-1] == '&':  script = script[:-1]     # Delete '&' for disable backgrounding command
         cmd = shlex.split(script.strip())    # For spliting with spaces and quote(s) for a command like: setchacon.sh "salon off" => ['setchacon.sh', 'salon off']
 
-        self.log.debug(u"==> Execute subprocess for '%s'" % cmd)
+        #self.log.debug(u"==> Execute subprocess for '%s'" % cmd)
         try:
             outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
         except subprocess.CalledProcessError, e:
@@ -98,6 +102,7 @@ class Script:
         return True, outputcmd    # Return value for "script.info_number | script.info_binary | script.info_string"
 
 
+    # -------------------------------------------------------------------------------------------------
     def is_number(self, s):
         ''' Return 'True' if s is a number
         '''
@@ -106,26 +111,40 @@ class Script:
             return True
         except ValueError:
             return False
+        except TypeError:
+            return False
 
 
-    def runScheduledCmd(self, log, devid, devname, scripttype, script, interval, send, stop):
-        """ Execute script/program every interval secondes.
-            @param
-            devid :        Device id
-            devname :      Device name
-            scripttype :   Scritp type
-            script :       Script
-            interval :     Interval in seconde to execute script
+    # -------------------------------------------------------------------------------------------------
+    def addScheduledScripts(self, deviceid, device, type, command, interval):
+        """"Add a sensor to sensors list. """
+        self._scheduledScripts.append({'deviceid': deviceid, 'device': device, 'type': type, 'command': command, 'interval': interval, 'nextread': 0})
+
+
+    # -------------------------------------------------------------------------------------------------
+    def runScheduledScripts(self, send, stopplugin, stopforupdate):
+        """ Execute info scripts every interval secondes.
         """
-        while not stop.isSet():
-            log.debug(u"==> Execute scheduled command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
-            rc, val = self.runCmd(script, scripttype)
-            if rc:
-                send(devid, val)
-            stop.wait(interval)
+        self.log.info(u"==> Thread for {0} registered 'Info Script' sensors started".format(len(self._scheduledScripts)))
+        if len(self._scheduledScripts) == 0: return     # Quit if no 'info script sensors'
+        while (not stopplugin.isSet()) and (not stopforupdate.isSet()):
+            #try :  # catch error if self._scheduledScripts modify during iteration
+                for sensor in self._scheduledScripts:
+                    if time.time() >= sensor['nextread'] :
+                        sensor['nextread'] = time.time() + sensor['interval']
+                        self.log.debug(u"==> EXECUTE scheduled 'Info Script' sensor '%s' for device '%s' (type %s)" % (sensor['command'], sensor['device'], sensor['type']))
+                        rc, val = self.runCmd(sensor['command'], sensor['type'])
+                        if rc:
+                            send(sensor['deviceid'], val)
+                        self.log.debug(u"==> Wait {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(sensor['interval'], sensor['device']))
+            #except:
+            #    pass
+                stopplugin.wait(0.5)
+        self.log.info(u"==> Thread for 'Info Script' sensors stopped")
+
             
-            
-    def runRequestedCmd(self, log, devid, devname, scripttype, script, state, send, stop):
+    # -------------------------------------------------------------------------------------------------
+    def runRequestedScript(self, devid, devname, scripttype, script, state, send, stop):
         """ Execute script/program every interval secondes.
             @param
             devid :        Device id
@@ -134,7 +153,7 @@ class Script:
             script :       script
             state :        Return state for command sensor
         """
-        log.debug(u"==> Execute requested command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
+        self.log.debug(u"==> EXECUTE requested command '%s' for device '%s' (type %s)" % (script, devname, scripttype))
         rc, val = self.runCmd(script, scripttype)
         if rc:
             send(devid, state)
