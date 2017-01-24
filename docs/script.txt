@@ -11,15 +11,6 @@ The Script plugin is used to run some Linux scripts/command lines with Domogik.
 
 The plugin can excecute any **executable** script or program (shell, python, perl ...) or compiled binary programs.
 
-.. warning::
-    **CAUTION**: This develop version (**1.5**) no longer uses the xPL layer and is no longer compatible with the old. 
-    Domogik devices must be created again.
-    Adding Scripts DT_Temp, DT_Switch, DT_Openclose ...
-    Possible to see the errors of the log in the "Advanced" tab
-
-The following documentation must be updated
- 
- 
 Dependencies
 ============
 
