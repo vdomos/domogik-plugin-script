@@ -50,11 +50,16 @@ class Script:
     """
 
     # -------------------------------------------------------------------------------------------------
-    def __init__(self, log):
-        """
+    def __init__(self, log, send, stop):
+        """ Init Weather object
+            @param log : log instance
+            @param send : callback to send values to domogik
+            @param stop : Event of the plugin to handle plugin stop
+            @param get_parameter : a callback to a plugin core function
         """
         self.log = log
-        self._scheduledScripts = []
+        self.send = send
+        self.stopplugin = stop
 
 
     # -------------------------------------------------------------------------------------------------
@@ -116,33 +121,40 @@ class Script:
 
 
     # -------------------------------------------------------------------------------------------------
-    def addScheduledScripts(self, deviceid, device, type, command, interval):
-        """"Add a sensor to sensors list. """
-        self._scheduledScripts.append({'deviceid': deviceid, 'device': device, 'type': type, 'command': command, 'interval': interval, 'nextread': 0})
+    def reloadScriptDevices(self, devices):
+        """ Called by the bin part when starting or devices added/deleted/updated
+        """
+        self.scriptdevices = devices
 
 
     # -------------------------------------------------------------------------------------------------
-    def runScheduledScripts(self, send, stopplugin, stopforupdate):
+    def runScheduledScripts(self):
         """ Execute info scripts every interval secondes.
         """
-        self.log.info(u"==> Thread for {0} registered 'Info Script' sensors started".format(len(self._scheduledScripts)))
-        if len(self._scheduledScripts) == 0: return     # Quit if no 'info script sensors'
-        while (not stopplugin.isSet()) and (not stopforupdate.isSet()):
-            #try :  # catch error if self._scheduledScripts modify during iteration
-                for sensor in self._scheduledScripts:
-                    if time.time() >= sensor['nextread'] :
-                        sensor['nextread'] = time.time() + sensor['interval']
-                        self.log.debug(u"==> EXECUTE scheduled 'Info Script' sensor '%s' for device '%s' (type %s)" % (sensor['command'], sensor['device'], sensor['type']))
-                        rc, val = self.runCmd(sensor['command'], sensor['type'])
-                        if rc:
-                            send(sensor['deviceid'], val)
-                        self.log.debug(u"==> Wait {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(sensor['interval'], sensor['device']))
-            #except:
-            #    pass
-                stopplugin.wait(0.5)
-        self.log.info(u"==> Thread for 'Info Script' sensors stopped")
+        self.log.info(u"==> Thread for 'Info Script' sensors started")
+        scriptinfo_nextread = {}
+        while not self.stopplugin.isSet():
+            for scriptdeviceid in self.scriptdevices:
+                name = self.scriptdevices[scriptdeviceid]["name"]
+                scripttype = self.scriptdevices[scriptdeviceid]["scripttype"]
+                command = self.scriptdevices[scriptdeviceid]["commands"][1]
+                interval = self.scriptdevices[scriptdeviceid]["interval"]
 
-            
+                if "info" not in scripttype: continue
+                if scriptdeviceid not in scriptinfo_nextread:  scriptinfo_nextread.update({scriptdeviceid: 0})
+                if time.time() >= scriptinfo_nextread[scriptdeviceid]:
+                    scriptinfo_nextread[scriptdeviceid] = time.time() + interval
+                    if interval <= 0: continue
+                    self.log.info(u"==> EXECUTE scheduled 'Info Script' '%s' for device '%s' (type %s)" % (command, name, scripttype))
+                    rc, val = self.runCmd(command, scripttype)
+                    if rc:
+                        self.log.info("==> UPDATE Sensor for device '%s' with value '%s' " % (name, val))
+                        self.send(scriptdeviceid, val)
+                    self.log.info(u"==> WAIT {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(interval, name))
+                self.stopplugin.wait(0.5)
+        self.log.info(u"==> Thread for 'Info Script' sensors stopped")
+   
+
     # -------------------------------------------------------------------------------------------------
     def runRequestedScript(self, devid, devname, scripttype, script, state, send, stop):
         """ Execute script/program every interval secondes.

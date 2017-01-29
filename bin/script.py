@@ -54,105 +54,98 @@ class ScriptManager(Plugin):
         """
         Plugin.__init__(self, name='script')
 
-        # check if the plugin is configured. If not, this will stop the plugin and log an error
+        # Check if the plugin is configured. If not, this will stop the plugin and log an error
         #if not self.check_configured():
         #    return
 
-        # ### get the devices list in plugin
-        # for this plugin, if no devices are created we won't be able to use devices.
+        # Get the devices list in plugin, if no devices are created we won't be able to use devices.
         self.devices = self.get_device_list(quit_if_no_device=True)
-        # print(self.devices)
+        #self.log.info(u"+++ devices list: %s" % format(self.devices))
+        
+        # Get the sensors id per device:
+        self.sensors = self.get_sensors(self.devices)
+        #self.log.info(u"+++ sensors: %s" % format(self.sensors))
 
         # Init script functions
-        self.script = Script(self.log)
-        self.sensors = {}
-        self.device_list = {}
+        self.script = Script(self.log, self.send_pub_data, self.get_stop())
         
-        # Set scripts devices list
-        self.initDeviceList(self.devices)
+        # Set scripts list with parameters
+        self.setScriptDevicesList(self.devices)
 
-        self.log.info(u"==> Add callback for new or changed devices.")
-        self.inDevicesUpdate = False
-        self.register_cb_update_devices(self.myHandleDeviceUpdate)
-        
-        self.ready()
-
-    # -------------------------------------------------------------------------------------------------
-    def initDeviceList(self, devices):
-        # Get the sensors id per device:
-        self.sensors = self.get_sensors(devices)
-        #self.log.info(u"==> sensors: %s" % format(self.sensors))	    # INFO ==> sensors: {66: {u'virtual_number': 159}, ...}  =>  ('device id': {'sensor name': 'sensor id'})
-        
-        self.log.info(u"==> Set Script devices list ...")
-        # ### For each device
-        for a_device in devices:
-            # self.log.info(u"a_device:   %s" % format(a_device))
-
-            device_id = a_device["id"]
-            device_name = a_device["name"]                              # Ex.: "Conso Elec Jour" 
-            device_type = a_device["device_type_id"]                    # Ex.: "script.info_number | script.info_binary | script.info_string | script.action|..."            
-            device_command1 = self.get_parameter(a_device, "command")         
-            self.device_list.update({device_id : { 'commands': ["", device_command1], 'name': device_name, 'scripttype': device_type }})
-
-            if "info" in device_type:                                                       # Shedule only script_info_* scripts    
-                command_interval = self.get_parameter(a_device, "interval")                 # Ex.: "60" in secondes
-                self.log.info(u"==> Device sensor '{0}' ({1}) for running '{2}' with interval {3}s".format(device_name, device_type, device_command1, command_interval))
-                if command_interval > 0:
-                    self.log.debug(u"==> Add '%s' device in reading sensor thread" % device_name)
-                    self.script.addScheduledScripts(device_id, device_name, device_type, device_command1, command_interval)
-                else:
-                    self.log.warning(u"==> Script info for '%s' device is DISABLED (interval = 0) !" % device_name)
-            else:
-                if device_type == "script.onoff": 
-                    self.device_list[device_id]['commands'][0] = self.get_parameter(a_device, "command0")
-                    # {'100': {'commands': ['setlight off', 'setlight on'], 'name': 'Lumiere sejour'}}
-                    self.log.info(u"==> Device command '{0}' ({1}) for running '{2}' if ON, for running '{3}' if OFF.".format(device_name, device_type, self.device_list[device_id]['commands'][1], self.device_list[device_id]['commands'][0]))
-                else:
-                    self.log.info(u"==> Device command '{0}' ({1}) for running '{2}' if TRIG".format(device_name, device_type, self.device_list[device_id]['commands'][1]))
-         
         self.log.info(u"==> Launch 'Info Script' sensors thread") 
         thr_name = "thr_infoscriptsensors"
-        self.stopForUpdate = threading.Event()
         self.thread_sensors = threading.Thread(None,
                                           self.script.runScheduledScripts,
                                           thr_name,
-                                          (self.send_pub_data, self.get_stop(), self.stopForUpdate),
+                                          (),
                                           {})
         self.thread_sensors.start()
         self.register_thread(self.thread_sensors)
 
+        self.log.info(u"==> Add callback for new or changed devices.")
+        self.register_cb_update_devices(self.reload_devices)
+        
+        self.ready()
 
+    # -------------------------------------------------------------------------------------------------
+    def setScriptDevicesList(self, devices):
+        self.log.info(u"==> Set Script devices list ...")
+        self.scriptdevices_list = {}        
+        for a_device in devices:    # For each device
+            # self.log.info(u"a_device:   %s" % format(a_device))
+            device_interval = 0
+            device_command0 = ""
+            device_command1 = self.get_parameter(a_device, "command") 
+            if a_device["device_type_id"] == "script.onoff":  
+                device_command0 = self.get_parameter(a_device, "command0") 
+            if "info" in a_device["device_type_id"]:  
+                device_interval = self.get_parameter(a_device, "interval") 
+            self.scriptdevices_list.update(
+                {a_device["id"] : 
+                        { 'name': a_device["name"], 
+                          'scripttype': a_device["device_type_id"], 
+                          'commands': [device_command0, device_command1] ,
+                          'interval': device_interval
+                        }
+                })
+            self.log.info(u"==> Device script '{0}'" . format(self.scriptdevices_list[a_device["id"]]))
+        self.script.reloadScriptDevices(self.scriptdevices_list)
+                        
+ 
     # -------------------------------------------------------------------------------------------------
     def on_mdp_request(self, msg):
         """ Called when a MQ req/rep message is received
         """
         Plugin.on_mdp_request(self, msg)
-        # self.log.info(u"==> Received MQ message: %s" % format(msg))
+        #self.log.info(u"==> Received MQ message: %s" % format(msg))
+        # => MQ Request received : <MQMessage(action=client.cmd, data='{u'state': u'1', u'command_id': 14, u'device_id': 39}')>
+    
         if msg.get_action() == "client.cmd":
             data = msg.get_data()
-            #self.log.debug(u"==> Received MQ REQ command message: %s" % format(data))      # INFO ==> Received MQ REQ command message: {u'state': u'1', u'command_id': 50, u'device_id': 139}
-                                                                                            # INFO ==> Received MQ REQ command message: {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
+            #self.log.debug(u"==> Received MQ REQ command message: %s" % format(data))      
+            # INFO ==> Received MQ REQ command message: {u'state': u'1', u'command_id': 50, u'device_id': 139}
+            # INFO ==> Received MQ REQ command message: {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
             device_id = data["device_id"]
             command_id = data["command_id"]
-            if device_id not in self.device_list:
+            if device_id not in self.scriptdevices_list:
                 self.log.error(u"### Device ID '%s' unknown" % device_id)
                 status = False
                 reason = u"Plugin script: Unknown device ID %d" % device_id
                 self.send_rep_ack(status, reason, command_id, "unknown") ;                      # Reply MQ REP (acq) to REQ command
                 return
             else:    
-                device_name = self.device_list[device_id]["name"]
-                device_type = self.device_list[device_id]["scripttype"]
+                device_name = self.scriptdevices_list[device_id]["name"]
+                device_type = self.scriptdevices_list[device_id]["scripttype"]
                 
                 # Three command Script: "script.action", "script.onoff" and "script.string"
                 if device_type == "script.action" or device_type == "script.onoff":
                     device_state = data["state"]
-                    device_command = self.device_list[device_id]["commands"][int(device_state)]
+                    device_command = self.scriptdevices_list[device_id]["commands"][int(device_state)]
                     
                 elif device_type == "script.string":
                     # Script string:  data = {u'parameter1': u'World', u'command_id': 71, u'device_id': 171}  or  {u'parameter1': u'World', u'device_id': 171, u'command_id': 71, u'parameter2': u'Hello'}
                     device_state = "1"      # Return a DT_Trigger sensor
-                    device_command = self.device_list[device_id]["commands"][int(device_state)]
+                    device_command = self.scriptdevices_list[device_id]["commands"][int(device_state)]
                     
                     if "parameter1" not in data:
                         self.log.error(u"### Missing 'parameter1' in command '%s' for device '%s' (type %s)" % (device_command, device_name, device_type))
@@ -206,40 +199,34 @@ class ScriptManager(Plugin):
         """ Send the value sensors values over MQ
         """
         data = {}
-        #if device_id not in self.device_list:
-        #    self.log.error("### Device ID '%s' unknown, Have you restarted the plugin after device creation ?" % (device_id))
-        #    return (False, "Plugin script: Unknown sensor device ID %d" % device_id)
-            
+        '''    
         for sensor in self.sensors[device_id]:          # {66: {u'Script OnOff': 159}}
-            self.log.info("==> Update Sensor '%s' (id:'%s') with value '%s' for device '%s'" % (sensor, self.sensors[device_id][sensor], value, self.device_list[device_id]["name"]))
-            # INFO ==> Update Sensor 'Script OnOff' / id '159' with value '1' for device 'Lum Sejour'
+            self.log.info("==> Update Sensor '%s' (id:'%s') with value '%s' for device '%s'" % (sensor, self.sensors[device_id][sensor], value, "nom du device"))
             data[self.sensors[device_id][sensor]] = value
-
+        '''    
+        sensor_device = self.sensors[device_id].keys()[0]       # Example: 'sensor_script_info_temperature'
+        data[self.sensors[device_id][sensor_device]] = value    # data['id_sensor'] = value
         try:
+            self.log.info("==> SEND MQ PUB message '%s'" % format(data))    #  => {u'id_sensor': u'value'} => {159: u'1'}
             self._pub.send_event('client.sensor', data)
-            #self.log.info("==> MQ PUB message for device '%s' sended = %s" % (self.device_list[device_id]["name"], format(data)))			# {u'id_sensor': u'value'} => {159: u'1'}
         except:
             # We ignore the message if some values are not correct ...
             self.log.error(u"Bad MQ PUB message to send : {0}".format(data))
 
 
     # -------------------------------------------------------------------------------------------------
-    def myHandleDeviceUpdate(self, devices):            # A methode to handle updated devices by callback
-        self.log.info(u"==> DeviceUpdate called")
-        #self.log.info(u"==> DeviceUpdate:   %s" % format(devices))
-
-        if self.inDevicesUpdate: 
-            self.log.info(u"==> DeviceUpdate already in progress")
-            return
-        self.inDevicesUpdate = True
-        for device in devices:
-            self.log.info(u" id %s:  '%s'" % (device['id'], device['name']))        # if 'interval' in device['parameters']: self.log.info(u" id %s:  '%s'  '%s'  %s" % (device['id'], device['name'], device['parameters']['command']['value'], device['parameters']['interval']['value']))
-            
-        self.log.info(u"==> Stopping 'Info Script' sensors thread")
-        self.stopForUpdate.set()
-        self.thread_sensors.join()            # The join() waits for threads to terminate.
-        self.initDeviceList(devices)
-        self.inDevicesUpdate = False
+    def reload_devices(self, devices):
+        """ Called when some devices are added/deleted/updated
+        """
+        self.log.info(u"==> Reload Device called")
+        self.setScriptDevicesList(devices)
+        self.devices = devices
+        self.sensors = self.get_sensors(devices)
+        '''
+        with 2 'Global parameters', there 2 calls:
+        2017-01-28 13:20:19,754 domogik-script INFO Retrieve the devices list for this client...
+        2017-01-28 13:20:19,791 domogik-script INFO Retrieve the devices list for this client...
+        '''
 
 
 # -------------------------------------------------------------------------------------------------
