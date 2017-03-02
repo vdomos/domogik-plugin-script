@@ -10,7 +10,7 @@
         "domogik_min_version": "0.5.0", 
         "name": "script", 
         "type": "plugin", 
-        "version": "2.20170128"
+        "version": "2.20170303"
     }, 
 
     "products" : [],

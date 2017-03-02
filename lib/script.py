@@ -140,7 +140,9 @@ class Script:
                 command = self.scriptdevices[scriptdeviceid]["commands"][1]
                 interval = self.scriptdevices[scriptdeviceid]["interval"]
 
-                if "info" not in scripttype: continue
+                if "info" not in scripttype: 
+                    self.stopplugin.wait(0.5)
+                    continue
                 if scriptdeviceid not in scriptinfo_nextread:  scriptinfo_nextread.update({scriptdeviceid: 0})
                 if time.time() >= scriptinfo_nextread[scriptdeviceid]:
                     scriptinfo_nextread[scriptdeviceid] = time.time() + interval
