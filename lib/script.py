@@ -140,19 +140,17 @@ class Script:
                 command = self.scriptdevices[scriptdeviceid]["commands"][1]
                 interval = self.scriptdevices[scriptdeviceid]["interval"]
 
-                if "info" not in scripttype: 
-                    self.stopplugin.wait(0.5)
-                    continue
-                if scriptdeviceid not in scriptinfo_nextread:  scriptinfo_nextread.update({scriptdeviceid: 0})
-                if time.time() >= scriptinfo_nextread[scriptdeviceid]:
-                    scriptinfo_nextread[scriptdeviceid] = time.time() + interval
-                    if interval <= 0: continue
-                    self.log.info(u"==> EXECUTE scheduled 'Info Script' '%s' for device '%s' (type %s)" % (command, name, scripttype))
-                    rc, val = self.runCmd(command, scripttype)
-                    if rc:
-                        self.log.info("==> UPDATE Sensor for device '%s' with value '%s' " % (name, val))
-                        self.send(scriptdeviceid, val)
-                    self.log.info(u"==> WAIT {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(interval, name))
+                if "info" in scripttype: 
+                    if scriptdeviceid not in scriptinfo_nextread:  scriptinfo_nextread.update({scriptdeviceid: 0})
+                    if time.time() >= scriptinfo_nextread[scriptdeviceid]:
+                        if interval > 0:
+                            scriptinfo_nextread[scriptdeviceid] = time.time() + interval
+                            self.log.info(u"==> EXECUTE scheduled 'Info Script' '%s' for device '%s' (type %s)" % (command, name, scripttype))
+                            rc, val = self.runCmd(command, scripttype)
+                            if rc:
+                                self.log.info("==> UPDATE Sensor for device '%s' with value '%s' " % (name, val))
+                                self.send(scriptdeviceid, val)
+                            self.log.info(u"==> WAIT {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(interval, name))
                 self.stopplugin.wait(0.5)
         self.log.info(u"==> Thread for 'Info Script' sensors stopped")
    
