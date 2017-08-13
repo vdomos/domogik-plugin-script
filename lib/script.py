@@ -148,7 +148,7 @@ class Script:
                             self.log.info(u"==> EXECUTE scheduled 'Info Script' '%s' for device '%s' (type %s)" % (command, name, scripttype))
                             rc, val = self.runCmd(command, scripttype)
                             if rc:
-                                self.log.info(u"==> UPDATE Sensor for device '%s' with value '%s' " % (name, val))
+                                self.log.info(u"==> UPDATE Sensor for device '%s' with value '%s' " % (name, val.decode('utf-8')))
                                 self.send(scriptdeviceid, val)
                             self.log.info(u"==> WAIT {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(interval, name))
                 self.stopplugin.wait(0.5)
