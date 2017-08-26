@@ -96,7 +96,7 @@ class ScriptManager(Plugin):
             device_interval = 0
             device_command0 = ""
             device_command1 = self.get_parameter(a_device, "command") 
-            if a_device["device_type_id"] == "script.onoff":  
+            if a_device["device_type_id"] == "script.switch":
                 device_command0 = self.get_parameter(a_device, "command0") 
             if "info" in a_device["device_type_id"]:  
                 device_interval = self.get_parameter(a_device, "interval") 
@@ -137,8 +137,8 @@ class ScriptManager(Plugin):
                 device_name = self.scriptdevices_list[device_id]["name"]
                 device_type = self.scriptdevices_list[device_id]["scripttype"]
                 
-                # Three command Script: "script.action", "script.onoff" and "script.string"
-                if device_type == "script.action" or device_type == "script.onoff":
+                # Three command Script: "script.action", "script.switch" and "script.string"
+                if device_type == "script.action" or device_type == "script.switch":
                     device_state = data["state"]
                     device_command = self.scriptdevices_list[device_id]["commands"][int(device_state)]
                     
@@ -204,7 +204,7 @@ class ScriptManager(Plugin):
             self.log.info("==> Update Sensor '%s' (id:'%s') with value '%s' for device '%s'" % (sensor, self.sensors[device_id][sensor], value, "nom du device"))
             data[self.sensors[device_id][sensor]] = value
         '''    
-        sensor_device = self.sensors[device_id].keys()[0]       # Example: 'sensor_script_info_temperature'
+        sensor_device = self.sensors[device_id].keys()[0]       # Example: 'temperature'
         data[self.sensors[device_id][sensor_device]] = value    # data['id_sensor'] = value
         try:
             self.log.info("==> SEND MQ PUB message '%s'" % format(data))    #  => {u'id_sensor': u'value'} => {159: u'1'}
