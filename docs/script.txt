@@ -52,7 +52,7 @@ In this case, please notice that you will have to create another device to set t
 
 
     
-Domogik device type : **Script OnOff**
+Domogik device type : **Script Switch**
 ---------------------------------------
 
 This is a **command** device that will execute a script or command line. The usage is to execute a switch.
@@ -102,7 +102,7 @@ In this case, one parameter is use ::
 
 
     
-Domogik device type : **Script Info Binary**
+Domogik device type : **Script Info State**
 --------------------------------------------
 
 This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
@@ -129,7 +129,7 @@ Example script that can be run (to get the status of a process for example): ::
     1
 
 
-Domogik device type : **Script Info OpenClose**
+Domogik device type : **Script Info Opening**
 -----------------------------------------------
 
 This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
@@ -156,7 +156,7 @@ Example script that can be run (to get the status of a process for example): ::
     1
 
 
-Domogik device type : **Script Info Number**
+Domogik device type : **Script Info Value**
 --------------------------------------------
 
 This is a **sensor** device that will execute a script or command line each N seconds. The sensor value will be the value displayed bu the script or command line.
@@ -300,7 +300,7 @@ They must return a value corresponding to the type of the script (Number, Binary
 
 Here are some script examples.
 
-A **number** script that returns the value 32.4: ::
+A **value** script that returns the value 32.4: ::
 
     #!/bin/bash
     echo 32.4
@@ -312,13 +312,13 @@ A **string** script that returns the value 'hello': ::
     echo "hello"
     exit 0
 
-A **binary** script that returns the status true: ::
+A **state** script that returns the status true: ::
 
     #!/bin/bash
     echo 1
     exit 0
     
-A **binary** script that returns the status false: ::
+A **state** script that returns the status false: ::
 
     #!/bin/bash
     echo 0
