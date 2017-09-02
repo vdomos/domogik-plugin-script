@@ -1,0 +1,509 @@
+{
+    "json_version": 2,
+
+    "identity": {
+        "author": "vdomos", 
+        "author_email": "domos pt vesta at gmail.com", 
+        "tags": ["script, shell, computer"], 
+        "dependencies": [],
+        "description": "Domogik Plugin for scripts", 
+        "domogik_min_version": "0.5.0", 
+        "name": "script", 
+        "type": "plugin", 
+        "version": "3.0"
+    }, 
+
+    "products" : [],
+
+    "configuration": [],
+
+    "device_types": {
+        "script.action": {
+            "id": "script.action",
+            "description": "Script to execute a Action", 
+            "name": "Script Action",
+            "commands": ["action"],
+            "sensors": ["trigger"],
+            "parameters": [
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.string": {
+            "id": "script.string",
+            "description": "Script to execute a Action with a string parameter", 
+            "name": "Script String",
+            "commands": ["string"],
+            "sensors": ["trigger"],
+            "parameters": [
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.switch": {
+            "id": "script.switch",
+            "description": "Script to execute a Switch action", 
+            "name": "Script Switch",
+            "commands": ["switch"],
+            "sensors": ["switch"],
+            "parameters": [
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Command (script/program) to execute a 'On' action  (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "key": "command0",
+                    "xpl": false,
+                    "description": "Command (script/program) to execute a 'Off' action  (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_value": {
+            "id": "script.info_value",
+            "description": "Script to read a Value Sensor", 
+            "name": "Script Info Value",
+            "commands": [],
+            "sensors": ["value"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_level": {
+            "id": "script.info_level",
+            "description": "Script to read a Level Sensor", 
+            "name": "Script Info Level",
+            "commands": [],
+            "sensors": ["level"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_temperature": {
+            "id": "script.info_temperature",
+            "description": "Script to read a Temperature Sensor", 
+            "name": "Script Info Temperature",
+            "commands": [],
+            "sensors": ["temperature"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_humidity": {
+            "id": "script.info_humidity",
+            "description": "Script to read a Humidity Sensor", 
+            "name": "Script Info Humidity",
+            "commands": [],
+            "sensors": ["humidity"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_state": {
+            "id": "script.sensor_state",
+            "description": "Script to read a Binary Sensor", 
+            "name": "Script Info State",
+            "commands": [],
+            "sensors": ["state"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_switch": {
+            "id": "script.sensor_switch",
+            "description": "Script to read a Switch Sensor", 
+            "name": "Script Info switch",
+            "commands": [],
+            "sensors": ["switch"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_opening": {
+            "id": "script.sensor_opening",
+            "description": "Script to read a Opening Sensor", 
+            "name": "Script Info Opening",
+            "commands": [],
+            "sensors": ["opening"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_string": {
+            "id": "script.sensor_string",
+            "description": "Script to read a string Sensor", 
+            "name": "Script Info String",
+            "commands": [],
+            "sensors": ["string"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                }
+            ]
+        },
+        "script.info_jsonvalue": {
+            "id": "script.info_jsonvalue",
+            "description": "Script to read a Json Value Sensor", 
+            "name": "Script Info Json Value",
+            "commands": [],
+            "sensors": ["value"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "description": "json query (result must be a number), ex. 'dataCadran.0.niveauPluie' to get ['dataCadran'][0][niveauPluie] value",
+                    "key": "jsonquery",
+                    "xpl" : false,
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        },
+        "script.info_jsonstate": {
+            "id": "script.sensor_jsonstate",
+            "description": "Script to read a Json Binary Sensor", 
+            "name": "Script Info Json State",
+            "commands": [],
+            "sensors": ["state"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "description": "json query (result must be a boolean), ex. 'dataCadran.0.niveauPluie' to get ['dataCadran'][0][niveauPluie] value",
+                    "key": "jsonquery",
+                    "xpl" : false,
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        },
+        "script.info_jsonstring": {
+            "id": "script.sensor_jsonstring",
+            "description": "Script to read a Json string Sensor", 
+            "name": "Script Info Json String",
+            "commands": [],
+            "sensors": ["string"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "description": "json query (result must be a string), ex. 'dataCadran.0.niveauPluie' to get ['dataCadran'][0][niveauPluie] value",
+                    "key": "jsonquery",
+                    "xpl" : false,
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        }
+    },
+
+    "commands": { 
+        "action" : {
+            "name" : "Action",
+            "return_confirmation" : true,
+            "parameters" : [
+                {
+                    "key" : "state",
+                    "data_type" : "DT_Trigger",
+                    "conversion" : ""
+                }
+            ]
+        },
+        "string" : {
+            "name" : "String",
+            "return_confirmation" : true,
+            "parameters" : [
+                {
+                    "key" : "parameter2",
+                    "data_type" : "DT_String",
+                    "conversion" : ""
+                },
+                {
+                    "key" : "parameter1",
+                    "data_type" : "DT_String",
+                    "conversion" : ""
+                }
+            ]
+        },
+        "switch" : {
+            "name" : "Switch",
+            "return_confirmation" : true,
+            "parameters" : [
+                {
+                    "key" : "state",
+                    "data_type" : "DT_Switch",
+                    "conversion" : ""
+                }
+            ]
+        }
+    },
+
+    "sensors": {
+        "trigger": {
+            "name": "Trigger",
+            "incremental" : false,
+            "data_type": "DT_Trigger",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": false,
+                "duplicate" : true,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "state": {
+            "name": "State",
+            "incremental" : false,
+            "data_type": "DT_Bool",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "switch": {
+            "name": "Switch",
+            "incremental" : false,
+            "data_type": "DT_Switch",
+            "conversion": "",
+            "timeout" : 0,
+            "history": {
+                "store": true,
+                "duplicate" : true,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "opening": {
+            "name": "Opening",
+            "incremental" : false,
+            "data_type": "DT_OpenClose",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "value": {
+            "name": "Value",
+            "incremental" : false,
+            "data_type": "DT_Number",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "level": {
+            "name": "Level",
+            "incremental" : false,
+            "data_type": "DT_Number",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "temperature": {
+            "name": "Temperature",
+            "incremental" : false,
+            "data_type": "DT_Temp",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "humidity": {
+            "name": "Humidity",
+            "incremental" : false,
+            "data_type": "DT_Humidity",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        },
+        "string": {
+            "name": "String",
+            "incremental" : false,
+            "data_type": "DT_String",
+            "conversion": "",
+            "timeout" : 600,
+            "history": {
+                "store": true,
+                "duplicate" : false,
+                "max": 0,
+                "expire": 0,
+                "round_value": 0
+            }
+        }
+    },
+    
+    "xpl_commands": {}, 
+    "xpl_stats": {}
+}

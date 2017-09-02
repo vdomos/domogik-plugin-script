@@ -61,10 +61,19 @@ class Script:
         self.log = log
         self.send = send
         self.stopplugin = stop
+        
+        self.numberSensors = ["script.info_value", "script.info_level", "script.info_temperature", "script.info_humidity"]                              
+        self.boolSensors = ["script.info_state", "script.info_switch", "script.info_opening", "script.info_jsonstate", "script.info_jsonvalue"]
+        
+        self.boolStrValue = {"false": "0", "true": "1", "off": "0", "on": "1", "disable": "0", 
+                             "enable": "1", "low": "0", "high": "1", "decrease": "0", "increase": "1", 
+                             "up": "0", "down": "1", "open": "0", "close": "1", "closed": "1", "stop": "0",
+                             "start": "1", "inactive": "0", "active": "1", "nomotion": "0", "motion": "1",
+                             "0": "0", "1": "1"}
 
 
     # -------------------------------------------------------------------------------------------------
-    def runCmd(self, script):
+    def runCmd(self, name, script):
         """ Execute shell command.
             script :      script (list)
         """
@@ -82,14 +91,14 @@ class Script:
         try:
             outputcmd = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False).strip()
         except subprocess.CalledProcessError, e:
-            errorstr = u"### Script '%s' failed with error : %d, %s" % (script, e.returncode, e.output.decode('ascii', errors='ignore'))
+            errorstr = u"### Script '%s' for device '%s' failed with error : %d, %s" % (script, name, e.returncode, e.output.decode('ascii', errors='ignore'))
             self.log.error(errorstr)
             return False, errorstr
         except OSError, e:
-            errorstr = u"### Script '%s' failed with OSerror : %d, (%s)" % (script, e.errno, e.strerror)
+            errorstr = u"### Script '%s for device '%s'' failed with OSerror : %d, (%s)" % (script, name, e.errno, e.strerror)
             self.log.error(errorstr)
             if e.errno == 8:
-                errorstr = u"### Script '%s': missing 'shebang' at top of the script or bad arch for binary program !" % script
+                errorstr = u"### Script '%s' for device '%s': missing 'shebang' at top of the script or bad arch for binary program !" % (script, name)
                 self.log.error(errorstr)
             return False, errorstr
 
@@ -97,43 +106,62 @@ class Script:
 
 
     # -----------------------------------------------------------------------------
-    def runHttpCmd(self, url):
+    def runHttpCmd(self, name, url):
         """ Call requect url
             url : url (the answer must return only one value !)
         """
         try:
             req = requests.get(url)
         except requests.exceptions.RequestException as err:
-            errorstr = u"### Http Script '%s' failed with Request Exception : %s" % (url, err)
+            errorstr = u"### Http Script '%s' for device '%s' failed with Request Exception : %s" % (url, name, err)
             self.log.error(errorstr)
             return False, errorstr
         if req.status_code > 304:
-            errorstr = u"### Http Script '%s' failed with HTTP Code : %s" % (url, req.status_code)
+            errorstr = u"### Http Script '%s' for device '%s' failed with HTTP Code : %s" % (url, name, req.status_code)
             self.log.error(errorstr)
             return False, errorstr
-       
+
         return True, req.text    # Return value for "script.info_* if no error"
 
-    
+
     # -----------------------------------------------------------------------------
-    def checkValueType(self, strvalue, type):
+    def checkValueType(self, name, script, type, strvalue):
         """ CHeck if a number sensor script return a number value and  boolean script return a boolean value
             strvalue: value in string format
             type: sesnor type
         """
-        if type in ["script.info_value", "script.info_level", "script.info_temperature", "script.info_humidity"]:
+        if type in self.numberSensors:
             if not self.is_number(strvalue):
-                errorstr = u"### Script type Number '%s' not return a number: '%s'" % (script, strvalue)
+                errorstr = u"### Script type Number '%s' for device '%s' not return a number: '%s'" % (script, name, strvalue)
                 self.log.error(errorstr)
                 return False
-        elif type in ["script.info_state", "script.info_switch", "script.info_opening"]:
-            if strvalue not in ['0', '1']:
-                errorstr = u"### Script type Binary '%s' not return a binary: '%s'" % (script, strvalue)
+        elif type in self.boolSensors:
+            if strvalue.lower() not in self.boolStrValue:
+                errorstr = u"### Script type Binary '%s' for device '%s' not return a boolean: '%s'" % (script, name, strvalue)
                 self.log.error(errorstr)
                 return False
+            strvalue = self.boolStrValue[strvalue.lower()]
         return True
 
 
+    # -----------------------------------------------------------------------------
+    def parseJsonQuery(self, name, strjson, jsonquery):
+        strvalue = strjson
+        jsonquerylist= jsonquery.split('#')
+        self.log.debug(u"### Json value = '%s  -  Query list = '%s'" % (strjson, jsonquerylist))
+        for elem in jsonquerylist:
+            try:
+                if is_number(elem):
+                    strvalue = strvalue[int(elem)]
+                else:
+                    strvalue = strvalue[elem]
+            except:
+                errorstr = u"### Json Script '%s' for device '%s' failed with query : '%s'" % (strjson, name, jsonquery)
+                self.log.error(errorstr)
+                return False, errorstr
+        return True, strvalue
+    
+    
     # -------------------------------------------------------------------------------------------------
     def is_number(self, s):
         ''' Return 'True' if s is a number
@@ -156,7 +184,7 @@ class Script:
 
     # -------------------------------------------------------------------------------------------------
     def runScheduledScripts(self):
-        """ Execute info scripts every interval seconds.
+        """ Execute info scripts every interval secondes.
         """
         self.log.info(u"==> Thread for 'Info Script' sensors started")
         scriptinfo_nextread = {}
@@ -175,16 +203,22 @@ class Script:
                             self.log.info(u"==> EXECUTE scheduled 'Info Script' '%s' for device '%s' (type %s)" % (script, name, scripttype))
                             
                             if "http://" in script:
-                                execstatus, val = self.runHttpCmd(script)
+                                execstatus, val = self.runHttpCmd(name, script)
                             else:
-                                execstatus, val = self.runCmd(script)
-                            
-                            if execstatus:                            
-                                typestatus = self.checkValueType(val, scripttype)
-                                if typestatus:                                
+                                execstatus, val = self.runCmd(name, script)
+
+                            if execstatus:
+                                if "json" in scripttype:
+                                    status, val = self.parseJsonQuery(name, val, self.scriptdevices[scriptdeviceid]["jsonquery"])
+                                    if status:
+                                        status = self.checkValueType(name, script, scripttype, val)
+                                else:
+                                    status = self.checkValueType(name, script, scripttype, val)
+
+                                if status:
                                     self.log.info(u"==> UPDATE Sensor for device '%s' with value '%s' " % (name, val.decode('utf-8')))
                                     self.send(scriptdeviceid, val)
-                            
+
                             self.log.info(u"==> WAIT {0} seconds before the next execution of 'Info Script' sensor for device '{1}' ".format(interval, name))
                 self.stopplugin.wait(0.5)
         self.log.info(u"==> Thread for 'Info Script' sensors stopped")
@@ -192,7 +226,7 @@ class Script:
 
     # -------------------------------------------------------------------------------------------------
     def runRequestedScript(self, devid, devname, scripttype, script, state, send, stop):
-        """ Execute script/program on received command.
+        """ Execute script/program every interval secondes.
             @param
             devid :        Device id
             devname :      Device name
@@ -208,3 +242,4 @@ class Script:
 
         if execstatus:
             send(devid, state)
+
