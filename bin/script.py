@@ -95,17 +95,25 @@ class ScriptManager(Plugin):
             # self.log.info(u"a_device:   %s" % format(a_device))
             device_interval = 0
             device_command0 = ""
+            device_jsonquery = ""            
             device_command1 = self.get_parameter(a_device, "command") 
+            
             if a_device["device_type_id"] == "script.switch":
                 device_command0 = self.get_parameter(a_device, "command0") 
+            
             if "info" in a_device["device_type_id"]:  
                 device_interval = self.get_parameter(a_device, "interval") 
+                
+            if "json" in a_device["device_type_id"]:
+                device_jsonquery = self.get_parameter(a_device, "jsonquery")            # Ex.: "dataCadran.0.niveauPluie"
+
             self.scriptdevices_list.update(
                 {a_device["id"] : 
                         { 'name': a_device["name"], 
                           'scripttype': a_device["device_type_id"], 
                           'commands': [device_command0, device_command1] ,
-                          'interval': device_interval
+                          'interval': device_interval,
+                          'jsonquery': device_jsonquery
                         }
                 })
             self.log.info(u"==> Device script '{0}'" . format(self.scriptdevices_list[a_device["id"]]))
@@ -207,11 +215,11 @@ class ScriptManager(Plugin):
         sensor_device = self.sensors[device_id].keys()[0]       # Example: 'temperature'
         data[self.sensors[device_id][sensor_device]] = value    # data['id_sensor'] = value
         try:
-            self.log.info("==> SEND MQ PUB message '%s'" % format(data))    #  => {u'id_sensor': u'value'} => {159: u'1'}
+            #self.log.info("==> SEND MQ PUB message '%s' for '%s' device" % (format(data), self.scriptdevices_list[device_id]["name"]))    #  => {u'id_sensor': u'value'} => {159: u'1'}
             self._pub.send_event('client.sensor', data)
         except:
             # We ignore the message if some values are not correct ...
-            self.log.error(u"Bad MQ PUB message to send : {0}".format(data))
+            self.log.error(u"Bad MQ PUB message '%s' to send for '%s' device" % (format(data), self.scriptdevices_list[device_id]["name"]))
 
 
     # -------------------------------------------------------------------------------------------------
