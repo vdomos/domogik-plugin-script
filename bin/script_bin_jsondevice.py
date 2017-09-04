@@ -95,17 +95,25 @@ class ScriptManager(Plugin):
             # self.log.info(u"a_device:   %s" % format(a_device))
             device_interval = 0
             device_command0 = ""
+            device_jsonquery = ""            
             device_command1 = self.get_parameter(a_device, "command") 
+            
             if a_device["device_type_id"] == "script.switch":
                 device_command0 = self.get_parameter(a_device, "command0") 
+            
             if "info" in a_device["device_type_id"]:  
                 device_interval = self.get_parameter(a_device, "interval") 
+                
+            if "json" in a_device["device_type_id"]:
+                device_jsonquery = self.get_parameter(a_device, "jsonquery")            # Ex.: "dataCadran.0.niveauPluie"
+
             self.scriptdevices_list.update(
                 {a_device["id"] : 
                         { 'name': a_device["name"], 
                           'scripttype': a_device["device_type_id"], 
                           'commands': [device_command0, device_command1] ,
-                          'interval': device_interval
+                          'interval': device_interval,
+                          'jsonquery': device_jsonquery
                         }
                 })
             self.log.info(u"==> Device script '{0}'" . format(self.scriptdevices_list[a_device["id"]]))

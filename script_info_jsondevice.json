@@ -244,6 +244,93 @@
                     "type": "string"
                 }
             ]
+        },
+        "script.info_jsonvalue": {
+            "id": "script.info_jsonvalue",
+            "description": "Script to read a Json Value Sensor", 
+            "name": "Script Info Json Value",
+            "commands": [],
+            "sensors": ["value"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "description": "json query (result must be a number), ex. 'dataCadran.0.niveauPluie' to get ['dataCadran'][0][niveauPluie] value",
+                    "key": "jsonquery",
+                    "xpl" : false,
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        },
+        "script.info_jsonstate": {
+            "id": "script.sensor_jsonstate",
+            "description": "Script to read a Json Binary Sensor", 
+            "name": "Script Info Json State",
+            "commands": [],
+            "sensors": ["state"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "description": "json query (result must be a boolean), ex. 'dataCadran.0.niveauPluie' to get ['dataCadran'][0][niveauPluie] value",
+                    "key": "jsonquery",
+                    "xpl" : false,
+                    "type": "string",
+                    "default": ""
+                }
+            ]
+        },
+        "script.info_jsonstring": {
+            "id": "script.sensor_jsonstring",
+            "description": "Script to read a Json string Sensor", 
+            "name": "Script Info Json String",
+            "commands": [],
+            "sensors": ["string"],
+            "parameters": [
+                {
+                    "key": "interval",
+                    "xpl": false,
+                    "description": "Interval in seconds between executions (-1 to disabled script).",
+                    "type": "integer",
+                    "default": "60"
+                },
+                {
+                    "key": "command",
+                    "xpl": false,
+                    "description": "Executable filename, including path, extension and arguments (Specials characters like ‘>’,’<’, ‘|’ are not authorized)",
+                    "type": "string"
+                },
+                {
+                    "description": "json query (result must be a string), ex. 'dataCadran.0.niveauPluie' to get ['dataCadran'][0][niveauPluie] value",
+                    "key": "jsonquery",
+                    "xpl" : false,
+                    "type": "string",
+                    "default": ""
+                }
+            ]
         }
     },
 
